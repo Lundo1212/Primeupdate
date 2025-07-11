@@ -1,0 +1,12 @@
+<!-- admin.html -->
+{% extends 'base.html' %}
+{% block content %}
+<h2>Post News</h2>
+<form method="post" enctype="multipart/form-data">
+  <input name="title" class="form-control mb-2" placeholder="Title" required>
+  <input name="category" class="form-control mb-2" placeholder="Category">
+  <textarea name="content" class="form-control mb-2" placeholder="Content" rows="5" required></textarea>
+  <input type="file" name="media" class="form-control mb-2">
+  <button class="btn btn-primary">Post</button>
+</form>
+{% endblock %}

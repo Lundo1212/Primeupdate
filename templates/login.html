@@ -1,0 +1,13 @@
+<!-- login.html -->
+{% extends 'base.html' %}
+{% block content %}
+<h2>Admin Login</h2>
+{% if error %}
+<p class="text-danger">{{ error }}</p>
+{% endif %}
+<form method="post">
+  <input name="username" class="form-control mb-2" placeholder="Username" required>
+  <input type="password" name="password" class="form-control mb-2" placeholder="Password" required>
+  <button class="btn btn-primary">Login</button>
+</form>
+{% endblock %}

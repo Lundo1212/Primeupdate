@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>PrimeUpdate</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}" />
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f7f7f7;
+            margin: 0;
+        }
+        header {
+            background: #20232a;
+            padding: 10px 20px;
+            display: flex;
+            align-items: center;
+        }
+        header a.logo {
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            color: white;
+        }
+        header a.logo img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-right: 10px;
+            box-shadow: 0 0 5px #333;
+        }
+        header a.logo span {
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+        nav {
+            margin-left: auto;
+        }
+        nav a {
+            color: white;
+            text-decoration: none;
+            margin-left: 20px;
+            font-size: 1rem;
+        }
+        nav a:hover {
+            text-decoration: underline;
+        }
+        main {
+            padding: 20px;
+            max-width: 1000px;
+            margin: auto;
+        }
+        footer {
+            text-align: center;
+            padding: 20px;
+            background: #20232a;
+            color: white;
+            margin-top: 40px;
+        }
+        .flash {
+            background: #4caf50;
+            color: white;
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <a href="{{ url_for('index') }}" class="logo">
+            <img src="{{ url_for('static', filename='logo.JPG') }}" alt="PrimeUpdate" />
+            <span>PrimeUpdate</span>
+        </a>
+        <nav>
+            {% if session.get('admin_user') %}
+                <a href="{{ url_for('admin') }}">Admin</a>
+                <a href="{{ url_for('logout') }}">Logout</a>
+            {% else %}
+                <a href="{{ url_for('login') }}">Login</a>
+            {% endif %}
+        </nav>
+    </header>
+
+    <!-- Flash messages -->
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        {% for message in messages %}
+          <div class="flash">{{ message }}</div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+
+    <!-- Main content -->
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        &copy; {{ current_year or 2025 }} PrimeUpdate. All rights reserved.
+    </footer>
+</body>
+</html>
+
