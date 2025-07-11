@@ -1,10 +1,10 @@
 services:
   - type: web
-    name: primeupdate ke
+    name: primeupdate
     env: python
-    plan: free
     buildCommand: ""
     startCommand: "python app.py"
+    plan: free
     envVars:
       - key: FLASK_ENV
         value: production
