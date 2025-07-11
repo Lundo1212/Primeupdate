@@ -1,21 +1,44 @@
-<!-- index.html -->
+<!-- templates/index.html -->
 {% extends 'base.html' %}
+
 {% block content %}
-<h1>Latest News</h1>
-<div class="row">
-  {% for post in posts %}
-  <div class="col-md-4 mb-3">
-    <div class="card">
-      {% if post[4] %}
-      <img src="{{ url_for('uploaded_file', filename=post[4]) }}" class="card-img-top" alt="Image">
-      {% endif %}
-      <div class="card-body">
-        <h5 class="card-title">{{ post[1] }}</h5>
-        <p><small>{{ post[3] }} | {{ post[5] }}</small></p>
-        <a href="{{ url_for('post', slug=post[2]) }}" class="btn btn-primary btn-sm">Read more</a>
+  <!-- Featured News -->
+  {% if posts %}
+  <div class="featured-banner">
+    <h2>{{ posts[0].title }}</h2>
+    <p>{{ posts[0].content[:200] }}...</p>
+    <a href="{{ url_for('view_post', post_id=posts[0].id) }}" class="btn btn-warning mt-3">Read More</a>
+  </div>
+  {% endif %}
+
+  <!-- Other News -->
+  <div class="row">
+    {% for post in posts[1:] %}
+    <div class="col-md-4 mb-4">
+      <div class="card news-card">
+        {% if post.image_filename %}
+        <img src="{{ url_for('static', filename='uploads/' + post.image_filename) }}" class="card-img-top news-image" alt="News Image">
+        {% endif %}
+        <div class="card-body">
+          <h5 class="card-title">{{ post.title }}</h5>
+          <p class="card-text">{{ post.content[:100] }}...</p>
+          <a href="{{ url_for('view_post', post_id=post.id) }}" class="btn btn-primary btn-sm">View Full Story</a>
+        </div>
       </div>
     </div>
+    {% endfor %}
   </div>
-  {% endfor %}
-</div>
+
+  <!-- Email Subscription -->
+  <div class="mt-5">
+    <h5>Subscribe for Updates</h5>
+    <form action="/subscribe" method="POST" class="row g-3">
+      <div class="col-auto">
+        <input type="email" name="email" class="form-control" placeholder="Enter your email" required>
+      </div>
+      <div class="col-auto">
+        <button type="submit" class="btn btn-success">Subscribe</button>
+      </div>
+    </form>
+  </div>
 {% endblock %}

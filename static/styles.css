@@ -1,10 +1,41 @@
-/* styles.css */
+/* static/styles.css */
+
 body {
-  background: #f9f9f9;
+  font-family: 'Segoe UI', sans-serif;
+  background-color: #f8f9fa;
+  color: #212529;
 }
-.card {
-  box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+
+.navbar-brand span {
+  font-size: 1.5rem;
+  color: #f7c600;
 }
-footer {
-  font-size: 0.9em;
+
+.news-card {
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease-in-out;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.news-card:hover {
+  transform: scale(1.02);
+}
+
+.featured-banner {
+  background: linear-gradient(to right, #222, #555);
+  color: white;
+  padding: 40px 20px;
+  border-radius: 10px;
+  margin-bottom: 2rem;
+}
+
+.featured-banner h2 {
+  font-size: 2.5rem;
+}
+
+.news-image {
+  max-height: 200px;
+  object-fit: cover;
+  width: 100%;
 }
