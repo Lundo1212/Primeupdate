@@ -94,7 +94,7 @@ def create_post():
     file = request.files['image']
     filename = secure_filename(file.filename)
     file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-    
+
     conn = get_db_connection()
     conn.execute('INSERT INTO posts (title, content, image, category, video_url, created_at) VALUES (?, ?, ?, ?, ?, ?)',
                  (title, content, filename, category, video_url, datetime.now()))
@@ -117,31 +117,36 @@ def subscribe():
 def uploaded_file(filename):
     return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
 
+# --- Initialize Database ---
+def initialize_db():
+    conn = sqlite3.connect('news.db')
+    conn.execute('''CREATE TABLE IF NOT EXISTS posts (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        title TEXT NOT NULL,
+        content TEXT NOT NULL,
+        image TEXT,
+        category TEXT,
+        video_url TEXT,
+        created_at TEXT NOT NULL
+    )''')
+    conn.execute('''CREATE TABLE IF NOT EXISTS admins (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        username TEXT NOT NULL,
+        password TEXT NOT NULL
+    )''')
+    conn.execute('''CREATE TABLE IF NOT EXISTS subscribers (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        email TEXT NOT NULL
+    )''')
+    conn.execute('INSERT INTO admins (username, password) VALUES (?, ?)', ('admin', 'admin123'))
+    conn.commit()
+    conn.close()
+
 # --- Main ---
 if __name__ == '__main__':
     if not os.path.exists('news.db'):
-        conn = sqlite3.connect('news.db')
-        conn.execute('''CREATE TABLE posts (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            title TEXT NOT NULL,
-            content TEXT NOT NULL,
-            image TEXT,
-            category TEXT,
-            video_url TEXT,
-            created_at TEXT NOT NULL
-        )''')
-        conn.execute('''CREATE TABLE admins (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            username TEXT NOT NULL,
-            password TEXT NOT NULL
-        )''')
-        conn.execute('''CREATE TABLE subscribers (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            email TEXT NOT NULL
-        )''')
-        conn.execute('INSERT INTO admins (username, password) VALUES (?, ?)', ('admin', 'admin123'))
-        conn.commit()
-        conn.close()
+        initialize_db()
     app.run(debug=True, port=5000)
+
 
  
