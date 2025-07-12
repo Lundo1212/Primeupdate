@@ -4,74 +4,134 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Primeupdates KE</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
-    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
-    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+        }
+        .navbar {
+            background-color: #1a1a1a;
+        }
+        .navbar-brand span {
+            font-weight: bold;
+            color: #e60000;
+        }
+        .breaking-news {
+            background-color: #e60000;
+            color: white;
+            padding: 5px 10px;
+            overflow: hidden;
+            white-space: nowrap;
+        }
+        .ticker {
+            display: inline-block;
+            animation: scroll 15s linear infinite;
+        }
+        @keyframes scroll {
+            0% { transform: translateX(100%); }
+            100% { transform: translateX(-100%); }
+        }
+        .carousel-item img {
+            width: 100%;
+            height: 400px;
+            object-fit: cover;
+        }
+        footer {
+            background: #f5f5f5;
+            padding: 20px 0;
+        }
+        .social-icons i {
+            font-size: 1.5rem;
+            margin-right: 15px;
+        }
+    </style>
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-        <div class="container-fluid">
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container">
             <a class="navbar-brand d-flex align-items-center" href="/">
-                <img src="{{ url_for('static', filename='logo.JPG') }}" alt="Logo" width="40" height="40" class="rounded-circle me-2">
-                <span class="fw-bold">Primeupdates KE</span>
+                <img src="/static/logo.JPG" alt="Logo" width="40" height="40" class="rounded-circle me-2">
+                <span>Primeupdates KE</span>
             </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
                     <li class="nav-item"><a class="nav-link" href="/category/Politics">Politics</a></li>
-                    <li class="nav-item"><a class="nav-link" href="/category/Business">Business</a></li>
                     <li class="nav-item"><a class="nav-link" href="/category/Sports">Sports</a></li>
                     <li class="nav-item"><a class="nav-link" href="/videos">Videos</a></li>
-                    <li class="nav-item"><a class="nav-link" href="/login">Admin</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/admin">Admin</a></li>
                 </ul>
             </div>
         </div>
     </nav>
 
-    <div class="container mt-4">
-        {% with messages = get_flashed_messages() %}
-            {% if messages %}
-                {% for message in messages %}
-                    <div class="alert alert-info">{{ message }}</div>
-                {% endfor %}
-            {% endif %}
-        {% endwith %}
+    <!-- Breaking News -->
+    <div class="breaking-news">
+        <strong>Trending:</strong>
+        <span class="ticker">
+            {% for news in breaking_news %} {{ news.title }} &nbsp;&nbsp;&bull;&nbsp;&nbsp; {% endfor %}
+        </span>
+    </div>
 
+    <!-- Hero Slideshow -->
+    <div id="carouselTopNews" class="carousel slide" data-bs-ride="carousel">
+        <div class="carousel-inner">
+            {% for post in top_posts %}
+            <div class="carousel-item {% if loop.first %}active{% endif %}">
+                <img src="/static/uploads/{{ post.image }}" class="d-block w-100" alt="...">
+                <div class="carousel-caption d-none d-md-block">
+                    <h5>{{ post.title }}</h5>
+                    <p>{{ post.category }}</p>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        <button class="carousel-control-prev" type="button" data-bs-target="#carouselTopNews" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon"></span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#carouselTopNews" data-bs-slide="next">
+            <span class="carousel-control-next-icon"></span>
+        </button>
+    </div>
+
+    <!-- Ad Banner -->
+    <div class="container my-4 text-center">
+        <!-- Replace with your Google AdSense code -->
+        <div class="bg-light border p-3">Ad Space - Your AdSense code goes here</div>
+    </div>
+
+    <!-- Page Content -->
+    <div class="container">
         {% block content %}{% endblock %}
     </div>
 
-    <footer class="bg-dark text-white mt-5">
-        <div class="container py-4">
+    <!-- Footer -->
+    <footer class="mt-5">
+        <div class="container">
             <div class="row">
-                <div class="col-md-4">
-                    <h5>Primeupdates KE</h5>
-                    <p>Your source for accurate and timely news updates.</p>
+                <div class="col-md-6">
+                    <p>&copy; {{ year }} Primeupdates KE. All Rights Reserved.</p>
                 </div>
-                <div class="col-md-4">
-                    <h5>Quick Links</h5>
-                    <ul class="list-unstyled">
-                        <li><a href="/" class="text-white">Home</a></li>
-                        <li><a href="/category/Politics" class="text-white">Politics</a></li>
-                        <li><a href="/category/Sports" class="text-white">Sports</a></li>
-                        <li><a href="/videos" class="text-white">Videos</a></li>
-                        <li><a href="#" class="text-white">Terms of Service</a></li>
-                    </ul>
+                <div class="col-md-6 text-end social-icons">
+                    <a href="#"><i class="fab fa-facebook"></i></a>
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                    <a href="#"><i class="fab fa-youtube"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
                 </div>
-                <div class="col-md-4">
-                    <h5>Follow Us</h5>
-                    <a href="#" class="text-white me-2"><i class="fab fa-facebook"></i></a>
-                    <a href="#" class="text-white me-2"><i class="fab fa-twitter"></i></a>
-                    <a href="#" class="text-white me-2"><i class="fab fa-youtube"></i></a>
-                    <a href="#" class="text-white"><i class="fab fa-instagram"></i></a>
+                <div class="col-12 mt-3">
+                    <a href="#">Terms of Service</a> | <a href="#">Privacy Policy</a>
                 </div>
             </div>
-            <div class="text-center pt-3">&copy; {{ year }} Primeupdates KE. All rights reserved.</div>
         </div>
     </footer>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
+
+
