@@ -1,6 +1,6 @@
+# --- Database Initialization Code (e.g., embedded in app.py or reusable function) ---
 import sqlite3
 
-# Initialize database and ensure required tables exist
 def initialize_db():
     conn = sqlite3.connect('news.db')
     c = conn.cursor()
@@ -27,11 +27,6 @@ def initialize_db():
         )
     ''')
 
-    # Insert default admin if not exists
-    c.execute('SELECT * FROM admins WHERE username = ?', ('admin',))
-    if not c.fetchone():
-        c.execute('INSERT INTO admins (username, password) VALUES (?, ?)', ('admin', 'admin123'))
-
     # Create subscribers table
     c.execute('''
         CREATE TABLE IF NOT EXISTS subscribers (
@@ -40,9 +35,15 @@ def initialize_db():
         )
     ''')
 
+    # Insert default admin if it doesn't exist
+    c.execute("SELECT COUNT(*) FROM admins WHERE username='admin'")
+    if c.fetchone()[0] == 0:
+        c.execute("INSERT INTO admins (username, password) VALUES (?, ?)", ('admin', 'admin123'))
+
     conn.commit()
     conn.close()
 
+# Example call
 if __name__ == '__main__':
     initialize_db()
-    print("✅ Database initialized successfully!")
+    print("Database initialized successfully.")
