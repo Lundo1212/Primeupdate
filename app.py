@@ -138,7 +138,7 @@ def initialize_db():
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         email TEXT NOT NULL
     )''')
-    conn.execute('INSERT OR IGNORE INTO admins (username, password) VALUES (?, ?)', ('admin', 'admin123'))
+    conn.execute('INSERT INTO admins (username, password) VALUES (?, ?)', ('admin', 'admin123'))
     conn.commit()
     conn.close()
 
@@ -146,7 +146,9 @@ def initialize_db():
 if __name__ == '__main__':
     if not os.path.exists('news.db'):
         initialize_db()
-    app.run(debug=True, port=5000)
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host='0.0.0.0', port=port, debug=True)
+
 
 
 
