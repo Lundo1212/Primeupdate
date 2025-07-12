@@ -75,8 +75,22 @@
             <option>Entertainment</option>
             <option>Technology</option>
             <option>Health</option>
+            <option>World</option>
+            <option>Education</option>
+            <option>Environment</option>
         </select>
         <button type="submit">Publish News</button>
+    </form>
+
+    <hr>
+
+    <form action="/admin/ads" method="POST">
+        <h3>Post Advertisement</h3>
+        <input type="text" name="title" placeholder="Ad Title" required>
+        <textarea name="content" rows="4" placeholder="Ad Content" required></textarea>
+        <input type="text" name="image_url" placeholder="Ad Image URL" required>
+        <input type="text" name="link" placeholder="Target Link (optional)">
+        <button type="submit">Post Ad</button>
     </form>
 
     <div class="post-list">
@@ -93,4 +107,3 @@
 
 </body>
 </html>
-

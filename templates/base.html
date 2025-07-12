@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -24,24 +25,36 @@
       color: white !important;
     }
     .hero {
-      background-color: #e3f2fd;
+      background-color: #ffcccc; /* red background */
       padding: 20px;
+      border-radius: 8px;
     }
     .trending {
-      background-color: #fff3cd;
+      background-color: #cce5ff; /* blue background */
       padding: 10px;
       font-weight: bold;
+      border-radius: 5px;
     }
     .main-content {
       background-color: #ffffff;
       padding: 20px;
+      border-radius: 10px;
+      margin-top: 20px;
+    }
+    .post-card {
+      background: #f8f9fa;
+      padding: 15px;
+      border-radius: 10px;
+      box-shadow: 0 0 5px rgba(0,0,0,0.1);
+      margin-bottom: 20px;
     }
     .ad-space {
-      background-color: #d1ecf1;
+      background-color: #fff;
+      border: 2px dashed #ccc;
       padding: 15px;
       text-align: center;
-      border: 1px dashed #0c5460;
-      margin: 20px 0;
+      margin: 30px 0;
+      border-radius: 10px;
     }
     footer {
       background: #212529;
@@ -75,7 +88,11 @@
       <li class="nav-item"><a href="/" class="nav-link">Home</a></li>
       <li class="nav-item"><a href="/admin" class="nav-link">Admin</a></li>
       <li class="nav-item"><a href="/category/Politics" class="nav-link">Politics</a></li>
+      <li class="nav-item"><a href="/category/Business" class="nav-link">Business</a></li>
       <li class="nav-item"><a href="/category/Sports" class="nav-link">Sports</a></li>
+      <li class="nav-item"><a href="/category/Entertainment" class="nav-link">Entertainment</a></li>
+      <li class="nav-item"><a href="/category/Technology" class="nav-link">Technology</a></li>
+      <li class="nav-item"><a href="/category/Health" class="nav-link">Health</a></li>
       <li class="nav-item"><a href="/videos" class="nav-link">Videos</a></li>
     </ul>
   </nav>
@@ -86,6 +103,7 @@
 </div>
 
 <div class="container">
+  <!-- Hero Carousel -->
   <div class="hero mt-3">
     <div class="row">
       {% for post in top_posts %}
@@ -94,7 +112,7 @@
           <img src="{{ url_for('uploaded_file', filename=post.image) }}" class="card-img-top" alt="...">
           <div class="card-body">
             <h5 class="card-title">{{ post.title }}</h5>
-            <a href="/post/{{ post.id }}" class="btn btn-primary">Read More</a>
+            <a href="/post/{{ post.id }}" class="btn btn-danger">Read More</a>
           </div>
         </div>
       </div>
@@ -102,21 +120,27 @@
     </div>
   </div>
 
-  <div class="ad-space">Ad Space 1 (728x90)</div>
+  <!-- First Ad Placement -->
+  <div class="ad-space">Google Ad – 728x90</div>
 
   <div class="main-content">
     {% for post in posts %}
-    <div class="mb-4">
+    <div class="post-card">
       <h4><a href="/post/{{ post.id }}">{{ post.title }}</a></h4>
       <img src="{{ url_for('uploaded_file', filename=post.image) }}" class="img-fluid" alt="">
       <p>{{ post.content[:200] }}...</p>
-      <a href="/post/{{ post.id }}">Continue reading</a>
+      <a href="/post/{{ post.id }}" class="btn btn-outline-primary">Continue reading</a>
     </div>
+    {% if loop.index == 3 %}
+    <div class="ad-space">Google Ad – 300x250</div>
+    {% endif %}
     {% endfor %}
   </div>
 
-  <div class="ad-space">Ad Space 2 (300x250)</div>
+  <!-- Second Ad Placement -->
+  <div class="ad-space">Google Ad – 160x600</div>
 
+  <!-- Subscription -->
   <form action="/subscribe" method="POST" class="mt-5">
     <div class="mb-3">
       <label for="email">Subscribe to Updates:</label>
@@ -124,8 +148,6 @@
     </div>
     <button type="submit" class="btn btn-success">Subscribe</button>
   </form>
-
-  <div class="ad-space">Ad Space 3 (160x600)</div>
 </div>
 
 <footer>
@@ -140,6 +162,7 @@
         <a href="/">Home</a><br>
         <a href="/admin">Admin</a><br>
         <a href="/category/Politics">Politics</a><br>
+        <a href="/category/Sports">Sports</a><br>
         <a href="/videos">Videos</a><br>
         <a href="#">Terms of Service</a>
       </div>
@@ -161,6 +184,3 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
-
-
-
