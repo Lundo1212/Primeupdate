@@ -1,136 +1,104 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Primeupdates KE</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        body {
-            font-family: 'Segoe UI', sans-serif;
-        }
-        .navbar {
-            background-color: #1a1a1a;
-        }
-        .navbar-brand span {
-            font-weight: bold;
-            color: #e60000;
-        }
-        .breaking-news {
-            background-color: #e60000;
-            color: white;
-            padding: 5px 10px;
-            overflow: hidden;
-            white-space: nowrap;
-        }
-        .ticker {
-            display: inline-block;
-            animation: scroll 15s linear infinite;
-        }
-        @keyframes scroll {
-            0% { transform: translateX(100%); }
-            100% { transform: translateX(-100%); }
-        }
-        .carousel-item img {
-            width: 100%;
-            height: 400px;
-            object-fit: cover;
-        }
-        footer {
-            background: #f5f5f5;
-            padding: 20px 0;
-        }
-        .social-icons i {
-            font-size: 1.5rem;
-            margin-right: 15px;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PrimeUpdates KE</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/5.3.0/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    body { font-family: 'Segoe UI', sans-serif; }
+    .hero-section { background: linear-gradient(to right, #001f3f, #003366); color: #fff; padding: 2rem 0; }
+    .carousel img { border-radius: 10px; height: 350px; object-fit: cover; }
+    .trending-section { background-color: #ffcc00; color: #000; padding: 0.5rem; font-weight: bold; }
+    .news-section { background-color: #f2f2f2; padding: 2rem 0; }
+    .ad-space { height: 90px; background-color: #ddd; border: 2px dashed #999; text-align: center; line-height: 90px; margin: 1rem 0; }
+    footer { background-color: #001f3f; color: white; padding: 2rem 1rem; }
+    .social-icons a { color: white; margin-right: 10px; font-size: 1.3rem; }
+    .site-logo img { width: 40px; height: 40px; border-radius: 50%; }
+  </style>
 </head>
 <body>
-    <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg navbar-dark">
-        <div class="container">
-            <a class="navbar-brand d-flex align-items-center" href="/">
-                <img src="/static/logo.JPG" alt="Logo" width="40" height="40" class="rounded-circle me-2">
-                <span>Primeupdates KE</span>
-            </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
-                    <li class="nav-item"><a class="nav-link" href="/category/Politics">Politics</a></li>
-                    <li class="nav-item"><a class="nav-link" href="/category/Sports">Sports</a></li>
-                    <li class="nav-item"><a class="nav-link" href="/videos">Videos</a></li>
-                    <li class="nav-item"><a class="nav-link" href="/admin">Admin</a></li>
-                </ul>
-            </div>
-        </div>
-    </nav>
-
-    <!-- Breaking News -->
-    <div class="breaking-news">
-        <strong>Trending:</strong>
-        <span class="ticker">
-            {% for news in breaking_news %} {{ news.title }} &nbsp;&nbsp;&bull;&nbsp;&nbsp; {% endfor %}
-        </span>
-    </div>
-
-    <!-- Hero Slideshow -->
-    <div id="carouselTopNews" class="carousel slide" data-bs-ride="carousel">
-        <div class="carousel-inner">
-            {% for post in top_posts %}
-            <div class="carousel-item {% if loop.first %}active{% endif %}">
-                <img src="/static/uploads/{{ post.image }}" class="d-block w-100" alt="...">
-                <div class="carousel-caption d-none d-md-block">
-                    <h5>{{ post.title }}</h5>
-                    <p>{{ post.category }}</p>
-                </div>
-            </div>
-            {% endfor %}
-        </div>
-        <button class="carousel-control-prev" type="button" data-bs-target="#carouselTopNews" data-bs-slide="prev">
-            <span class="carousel-control-prev-icon"></span>
-        </button>
-        <button class="carousel-control-next" type="button" data-bs-target="#carouselTopNews" data-bs-slide="next">
-            <span class="carousel-control-next-icon"></span>
-        </button>
-    </div>
-
-    <!-- Ad Banner -->
-    <div class="container my-4 text-center">
-        <!-- Replace with your Google AdSense code -->
-        <div class="bg-light border p-3">Ad Space - Your AdSense code goes here</div>
-    </div>
-
-    <!-- Page Content -->
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <div class="container">
-        {% block content %}{% endblock %}
+      <a class="navbar-brand d-flex align-items-center" href="#">
+        <span class="site-logo me-2"><img src="/static/logo.JPG" alt="Logo"></span>
+        <strong>PrimeUpdates KE</strong>
+      </a>
     </div>
+  </nav>
 
-    <!-- Footer -->
-    <footer class="mt-5">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-6">
-                    <p>&copy; {{ year }} Primeupdates KE. All Rights Reserved.</p>
-                </div>
-                <div class="col-md-6 text-end social-icons">
-                    <a href="#"><i class="fab fa-facebook"></i></a>
-                    <a href="#"><i class="fab fa-twitter"></i></a>
-                    <a href="#"><i class="fab fa-youtube"></i></a>
-                    <a href="#"><i class="fab fa-instagram"></i></a>
-                </div>
-                <div class="col-12 mt-3">
-                    <a href="#">Terms of Service</a> | <a href="#">Privacy Policy</a>
-                </div>
+  <!-- Hero Section -->
+  <div class="hero-section">
+    <div class="container">
+      <div id="heroCarousel" class="carousel slide" data-bs-ride="carousel">
+        <div class="carousel-inner">
+          {% for post in top_posts %}
+          <div class="carousel-item {% if loop.index == 1 %}active{% endif %}">
+            <img src="{{ url_for('uploaded_file', filename=post.image) }}" class="d-block w-100" alt="{{ post.title }}">
+            <div class="carousel-caption d-none d-md-block">
+              <h5>{{ post.title }}</h5>
+              <p>{{ post.content[:100] }}...</p>
             </div>
+          </div>
+          {% endfor %}
         </div>
-    </footer>
+        <button class="carousel-control-prev" type="button" data-bs-target="#heroCarousel" data-bs-slide="prev">
+          <span class="carousel-control-prev-icon"></span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#heroCarousel" data-bs-slide="next">
+          <span class="carousel-control-next-icon"></span>
+        </button>
+      </div>
+    </div>
+  </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <!-- Trending Ticker -->
+  <div class="trending-section">
+    <marquee behavior="scroll" direction="left">
+      {% for news in breaking_news %} 🔥 {{ news.title }} &nbsp;&nbsp;&nbsp; {% endfor %}
+    </marquee>
+  </div>
+
+  <!-- Main News Section -->
+  <div class="news-section">
+    <div class="container">
+      <div class="row">
+        {% for post in posts %}
+        <div class="col-md-4 mb-4">
+          <div class="card h-100">
+            <img src="{{ url_for('uploaded_file', filename=post.image) }}" class="card-img-top" alt="{{ post.title }}">
+            <div class="card-body">
+              <h5 class="card-title">{{ post.title }}</h5>
+              <p class="card-text">{{ post.content[:100] }}...</p>
+              <a href="/post/{{ post.id }}" class="btn btn-primary">Read More</a>
+            </div>
+          </div>
+        </div>
+        {% if loop.index % 3 == 0 %}<div class="ad-space">Advertisement</div>{% endif %}
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    <div class="container text-center">
+      <p>Follow us on:</p>
+      <div class="social-icons">
+        <a href="#"><i class="fab fa-facebook"></i></a>
+        <a href="#"><i class="fab fa-twitter"></i></a>
+        <a href="#"><i class="fab fa-youtube"></i></a>
+        <a href="#"><i class="fab fa-instagram"></i></a>
+      </div>
+      <hr class="bg-white">
+      <p><a href="#" class="text-white">Terms of Service</a> | <a href="#" class="text-white">Privacy Policy</a></p>
+      <p>&copy; {{ year }} PrimeUpdates KE. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
 
