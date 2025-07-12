@@ -1,12 +1,96 @@
-<!-- admin.html -->
-{% extends 'base.html' %}
-{% block content %}
-<h2>Post News</h2>
-<form method="post" enctype="multipart/form-data">
-  <input name="title" class="form-control mb-2" placeholder="Title" required>
-  <input name="category" class="form-control mb-2" placeholder="Category">
-  <textarea name="content" class="form-control mb-2" placeholder="Content" rows="5" required></textarea>
-  <input type="file" name="media" class="form-control mb-2">
-  <button class="btn btn-primary">Post</button>
-</form>
-{% endblock %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin Dashboard – PrimeUpdates KE</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background-color: #f4f6f8;
+            margin: 0;
+        }
+        header {
+            background-color: #004080;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+        .admin-container {
+            max-width: 800px;
+            margin: 30px auto;
+            background: white;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        form input, form textarea, form select {
+            width: 100%;
+            margin: 10px 0;
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+        form button {
+            padding: 10px 20px;
+            background: #004080;
+            color: white;
+            border: none;
+            border-radius: 5px;
+        }
+        .post-list {
+            margin-top: 30px;
+        }
+        .post-item {
+            padding: 15px;
+            background: #f9f9f9;
+            margin-bottom: 10px;
+            border-radius: 6px;
+        }
+        .logout {
+            float: right;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>PrimeUpdates KE – Admin Panel</h1>
+    <a href="/logout" class="logout">Logout</a>
+</header>
+
+<div class="admin-container">
+    <h2>Welcome, {{ username }}</h2>
+    <form action="/post" method="POST" enctype="multipart/form-data">
+        <input type="text" name="title" placeholder="News Title" required>
+        <textarea name="content" rows="6" placeholder="News Content" required></textarea>
+        <input type="text" name="video_url" placeholder="Video URL (YouTube/MP4) – Optional">
+        <input type="file" name="image" accept="image/*" required>
+        <select name="category" required>
+            <option value="">Select Category</option>
+            <option>Politics</option>
+            <option>Business</option>
+            <option>Sports</option>
+            <option>Entertainment</option>
+            <option>Technology</option>
+            <option>Health</option>
+        </select>
+        <button type="submit">Publish News</button>
+    </form>
+
+    <div class="post-list">
+        <h3>Previously Posted News</h3>
+        {% for post in posts %}
+            <div class="post-item">
+                <strong>{{ post['title'] }}</strong><br>
+                <small>{{ post['created_at'] }}</small><br>
+                <a href="{{ url_for('view_post', post_id=post['id']) }}" target="_blank">View Post</a>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+
+</body>
+</html>
+
