@@ -1,186 +1,112 @@
 <!DOCTYPE html>
-<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Prime Updates KE</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PrimeUpdates KE</title>
+  <link rel="icon" href="{{ url_for('static', filename='logo.JPG') }}">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
   <style>
     body {
-      background: #f2f2f2;
       font-family: 'Segoe UI', sans-serif;
+      background: #f5f6fa;
+      margin: 0;
     }
     header {
-      background: linear-gradient(90deg, #1a1a1a, #004080);
-      color: #fff;
-      padding: 1rem;
+      background-color: #003366;
+      color: white;
+      padding: 10px 15px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
     }
-    .logo-text {
+    .logo-container {
+      display: flex;
+      align-items: center;
+    }
+    .logo-container img {
+      width: 40px;
+      height: 40px;
+      margin-right: 10px;
+      border-radius: 50%;
+    }
+    .site-title {
       font-size: 1.5rem;
-      font-weight: bold;
+      font-weight: 600;
     }
-    .navbar-nav a {
-      color: white !important;
-    }
-    .hero {
-      background-color: #ffcccc; /* red background */
-      padding: 20px;
-      border-radius: 8px;
-    }
-    .trending {
-      background-color: #cce5ff; /* blue background */
+    .nav-categories {
+      overflow-x: auto;
+      white-space: nowrap;
+      background-color: #f8f9fa;
       padding: 10px;
-      font-weight: bold;
-      border-radius: 5px;
+      border-bottom: 1px solid #ddd;
     }
-    .main-content {
-      background-color: #ffffff;
-      padding: 20px;
-      border-radius: 10px;
-      margin-top: 20px;
+    .nav-categories a {
+      display: inline-block;
+      margin-right: 15px;
+      color: #004080;
+      font-weight: 500;
+      text-decoration: none;
     }
-    .post-card {
-      background: #f8f9fa;
-      padding: 15px;
-      border-radius: 10px;
-      box-shadow: 0 0 5px rgba(0,0,0,0.1);
-      margin-bottom: 20px;
-    }
-    .ad-space {
-      background-color: #fff;
-      border: 2px dashed #ccc;
-      padding: 15px;
-      text-align: center;
-      margin: 30px 0;
-      border-radius: 10px;
+    .nav-categories a:hover {
+      color: #c9302c;
     }
     footer {
-      background: #212529;
+      background-color: #003366;
       color: white;
-      padding: 2rem 1rem;
+      padding: 20px 0;
       margin-top: 40px;
     }
-    .footer-links a {
+    footer a {
       color: #fff;
       text-decoration: none;
     }
-    .footer-links a:hover {
+    footer a:hover {
       text-decoration: underline;
-    }
-    .social-icons a {
-      color: white;
-      margin-right: 15px;
-      font-size: 1.3rem;
     }
   </style>
 </head>
 <body>
 
-<header class="d-flex justify-content-between align-items-center">
-  <div class="d-flex align-items-center">
-    <img src="{{ url_for('static', filename='logo.JPG') }}" alt="Logo" class="rounded-circle" style="width: 40px; height: 40px; margin-right: 10px;">
-    <span class="logo-text">Prime Updates KE</span>
+<header>
+  <div class="logo-container">
+    <img src="{{ url_for('static', filename='logo.JPG') }}" alt="Logo">
+    <div class="site-title">PrimeUpdates KE</div>
   </div>
-  <nav class="navbar navbar-expand-lg">
-    <ul class="navbar-nav">
-      <li class="nav-item"><a href="/" class="nav-link">Home</a></li>
-      <li class="nav-item"><a href="/admin" class="nav-link">Admin</a></li>
-      <li class="nav-item"><a href="/category/Politics" class="nav-link">Politics</a></li>
-      <li class="nav-item"><a href="/category/Business" class="nav-link">Business</a></li>
-      <li class="nav-item"><a href="/category/Sports" class="nav-link">Sports</a></li>
-      <li class="nav-item"><a href="/category/Entertainment" class="nav-link">Entertainment</a></li>
-      <li class="nav-item"><a href="/category/Technology" class="nav-link">Technology</a></li>
-      <li class="nav-item"><a href="/category/Health" class="nav-link">Health</a></li>
-      <li class="nav-item"><a href="/videos" class="nav-link">Videos</a></li>
-    </ul>
+  <nav>
+    <a href="/" class="text-white me-3">Home</a>
+    <a href="/admin" class="text-white me-3">Admin</a>
   </nav>
 </header>
 
-<div class="trending">
-  <marquee behavior="scroll" direction="left">{% for post in breaking_news %} &nbsp;🔴 {{ post.title }}&nbsp;&nbsp;&nbsp;{% endfor %}</marquee>
+<!-- Horizontal news categories -->
+<div class="nav-categories">
+  <a href="/category/Politics">Politics</a>
+  <a href="/category/Business">Business</a>
+  <a href="/category/Sports">Sports</a>
+  <a href="/category/Entertainment">Entertainment</a>
+  <a href="/category/Technology">Technology</a>
+  <a href="/category/Health">Health</a>
+  <a href="/videos">Videos</a>
 </div>
 
-<div class="container">
-  <!-- Hero Carousel -->
-  <div class="hero mt-3">
-    <div class="row">
-      {% for post in top_posts %}
-      <div class="col-md-4">
-        <div class="card">
-          <img src="{{ url_for('uploaded_file', filename=post.image) }}" class="card-img-top" alt="...">
-          <div class="card-body">
-            <h5 class="card-title">{{ post.title }}</h5>
-            <a href="/post/{{ post.id }}" class="btn btn-danger">Read More</a>
-          </div>
-        </div>
-      </div>
-      {% endfor %}
-    </div>
-  </div>
-
-  <!-- First Ad Placement -->
-  <div class="ad-space">Google Ad – 728x90</div>
-
-  <div class="main-content">
-    {% for post in posts %}
-    <div class="post-card">
-      <h4><a href="/post/{{ post.id }}">{{ post.title }}</a></h4>
-      <img src="{{ url_for('uploaded_file', filename=post.image) }}" class="img-fluid" alt="">
-      <p>{{ post.content[:200] }}...</p>
-      <a href="/post/{{ post.id }}" class="btn btn-outline-primary">Continue reading</a>
-    </div>
-    {% if loop.index == 3 %}
-    <div class="ad-space">Google Ad – 300x250</div>
-    {% endif %}
-    {% endfor %}
-  </div>
-
-  <!-- Second Ad Placement -->
-  <div class="ad-space">Google Ad – 160x600</div>
-
-  <!-- Subscription -->
-  <form action="/subscribe" method="POST" class="mt-5">
-    <div class="mb-3">
-      <label for="email">Subscribe to Updates:</label>
-      <input type="email" name="email" class="form-control" placeholder="Enter your email" required>
-    </div>
-    <button type="submit" class="btn btn-success">Subscribe</button>
-  </form>
+<!-- Page-specific content -->
+<div class="container mt-4">
+  {% block content %}{% endblock %}
 </div>
 
-<footer>
+<footer class="text-center">
   <div class="container">
-    <div class="row">
-      <div class="col-md-4">
-        <h5>Prime Updates KE</h5>
-        <p>Your trusted source for the latest news in Kenya and beyond.</p>
-      </div>
-      <div class="col-md-4 footer-links">
-        <h6>Useful Links</h6>
-        <a href="/">Home</a><br>
-        <a href="/admin">Admin</a><br>
-        <a href="/category/Politics">Politics</a><br>
-        <a href="/category/Sports">Sports</a><br>
-        <a href="/videos">Videos</a><br>
-        <a href="#">Terms of Service</a>
-      </div>
-      <div class="col-md-4">
-        <h6>Follow Us</h6>
-        <div class="social-icons">
-          <a href="#"><i class="fab fa-facebook"></i></a>
-          <a href="#"><i class="fab fa-twitter"></i></a>
-          <a href="#"><i class="fab fa-youtube"></i></a>
-          <a href="#"><i class="fab fa-instagram"></i></a>
-        </div>
-      </div>
+    <p>&copy; {{ year }} PrimeUpdates KE. All rights reserved.</p>
+    <div>
+      <a href="#">Terms of Service</a> |
+      <a href="#">Privacy Policy</a>
     </div>
-    <hr>
-    <p class="text-center">&copy; {{ year }} Prime Updates KE. All rights reserved.</p>
   </div>
 </footer>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
+
