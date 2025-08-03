@@ -3,109 +3,184 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Admin Dashboard – PrimeUpdates KE</title>
-  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+  <title>Prime Updates KE</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <style>
     body {
       font-family: 'Segoe UI', sans-serif;
-      background-color: #f4f6f8;
-      margin: 0;
+      background: #f5f6fa;
     }
     header {
-      background-color: #004080;
+      background: linear-gradient(to right, #004080, #1a1a1a);
       color: white;
-      padding: 20px;
-      text-align: center;
+      padding: 1rem;
     }
-    .admin-container {
-      max-width: 800px;
-      margin: 30px auto;
-      background: white;
-      padding: 25px;
-      border-radius: 8px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
-    }
-    form input, form textarea, form select {
-      width: 100%;
-      margin: 10px 0;
-      padding: 10px;
-      border-radius: 5px;
-      border: 1px solid #ccc;
-    }
-    form button {
-      padding: 10px 20px;
-      background: #004080;
-      color: white;
-      border: none;
-      border-radius: 5px;
-    }
-    .post-list {
-      margin-top: 30px;
-    }
-    .post-item {
-      padding: 15px;
-      background: #f9f9f9;
-      margin-bottom: 10px;
-      border-radius: 6px;
+    .logo-title {
       display: flex;
-      justify-content: space-between;
       align-items: center;
     }
-    .logout {
-      float: right;
-      color: white;
+    .logo-title img {
+      width: 40px;
+      height: 40px;
+      margin-right: 10px;
     }
-    .delete-btn {
-      background: #dc3545;
+    .categories-scroll {
+      overflow-x: auto;
+      white-space: nowrap;
+      background: #003366;
+      padding: 10px;
+    }
+    .categories-scroll a {
+      display: inline-block;
       color: white;
-      border: none;
-      padding: 5px 10px;
-      border-radius: 4px;
-      cursor: pointer;
+      background: #0059b3;
+      padding: 8px 14px;
+      margin-right: 8px;
+      border-radius: 20px;
       text-decoration: none;
+      font-size: 0.9rem;
+    }
+    .marquee {
+      background: #004085;
+      color: #fff;
+      padding: 8px;
+      font-weight: bold;
+    }
+    .hero-slide {
+      background: #ffdddd;
+      padding: 20px;
+    }
+    .hero-slide img {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+    }
+    .card-news {
+      background: #f9f9f9;
+      border: none;
+      box-shadow: 0 0 6px rgba(0,0,0,0.1);
+      margin-bottom: 1rem;
+    }
+    .ad-slot {
+      background: #ffeeba;
+      border: 1px dashed #d39e00;
+      text-align: center;
+      padding: 15px;
+      margin: 1rem 0;
+    }
+    footer {
+      background: #212529;
+      color: white;
+      padding: 2rem 1rem;
+    }
+    .social-icons a {
+      color: #fff;
+      margin-right: 15px;
+      font-size: 1.3rem;
     }
   </style>
 </head>
 <body>
 
-<header>
-  <h1>PrimeUpdates KE – Admin Panel</h1>
-  <a href="/logout" class="logout">Logout</a>
+<header class="d-flex justify-content-between align-items-center px-3">
+  <div class="logo-title">
+    <img src="{{ url_for('static', filename='logo.JPG') }}" alt="Logo" class="rounded-circle">
+    <span class="fw-bold fs-4">Prime Updates KE</span>
+  </div>
+  <nav>
+    <a href="/admin" class="btn btn-light btn-sm">Admin</a>
+  </nav>
 </header>
 
-<div class="admin-container">
-  <h2>Welcome, {{ username }}</h2>
-  <form action="/post" method="POST" enctype="multipart/form-data">
-    <input type="text" name="title" placeholder="News Title" required>
-    <textarea name="content" rows="6" placeholder="News Content" required></textarea>
-    <input type="text" name="video_url" placeholder="Video URL (YouTube/MP4) – Optional">
-    <input type="file" name="image" accept="image/*" required>
-    <select name="category" required>
-      <option value="">Select Category</option>
-      <option>Politics</option>
-      <option>Business</option>
-      <option>Sports</option>
-      <option>Entertainment</option>
-      <option>Technology</option>
-      <option>Health</option>
-    </select>
-    <button type="submit">Publish News</button>
-  </form>
+<div class="categories-scroll">
+  <a href="/category/Politics">Politics</a>
+  <a href="/category/Business">Business</a>
+  <a href="/category/Sports">Sports</a>
+  <a href="/category/Entertainment">Entertainment</a>
+  <a href="/category/Technology">Technology</a>
+  <a href="/category/Health">Health</a>
+  <a href="/category/Education">Education</a>
+  <a href="/category/Opinion">Opinion</a>
+</div>
 
-  <div class="post-list">
-    <h3>Previously Posted News</h3>
-    {% for post in posts %}
-      <div class="post-item">
-        <div>
-          <strong>{{ post['title'] }}</strong><br>
-          <small>{{ post['created_at'] }}</small><br>
-          <a href="{{ url_for('view_post', post_id=post['id']) }}" target="_blank">View Post</a>
+<div class="marquee">
+  <marquee>{% for post in breaking_news %} ⚠ {{ post.title }} &nbsp;&nbsp;&nbsp; {% endfor %}</marquee>
+</div>
+
+<div class="container">
+  <div class="hero-slide row mt-3">
+    {% for post in top_posts %}
+      <div class="col-md-4 mb-3">
+        <div class="card card-news">
+          <img src="{{ url_for('uploaded_file', filename=post.image) }}" alt="" class="card-img-top">
+          <div class="card-body">
+            <h5 class="card-title">{{ post.title }}</h5>
+            <a href="/post/{{ post.id }}" class="btn btn-primary btn-sm">Read More</a>
+          </div>
         </div>
-        <a href="/delete/{{ post['id'] }}" class="delete-btn">Delete</a>
       </div>
     {% endfor %}
   </div>
+
+  <div class="ad-slot">Ad Space 1 – Google AdSense Here</div>
+
+  {% for post in posts %}
+    <div class="card card-news">
+      <div class="row g-0">
+        <div class="col-md-4">
+          <img src="{{ url_for('uploaded_file', filename=post.image) }}" class="img-fluid" alt="...">
+        </div>
+        <div class="col-md-8">
+          <div class="card-body">
+            <h5 class="card-title">{{ post.title }}</h5>
+            <p class="card-text">{{ post.content[:150] }}...</p>
+            <a href="/post/{{ post.id }}" class="btn btn-outline-primary btn-sm">Read More</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  {% endfor %}
+
+  <div class="ad-slot">Ad Space 2 – Google AdSense Here</div>
+
+  <form action="/subscribe" method="POST" class="my-4">
+    <label for="email">Subscribe to Updates</label>
+    <div class="input-group">
+      <input type="email" name="email" class="form-control" placeholder="Enter your email" required>
+      <button type="submit" class="btn btn-success">Subscribe</button>
+    </div>
+  </form>
 </div>
 
+<footer>
+  <div class="container">
+    <div class="row">
+      <div class="col-md-6">
+        <h5>Prime Updates KE</h5>
+        <p>Your trusted source for daily news, analysis and video coverage in Kenya and beyond.</p>
+      </div>
+      <div class="col-md-3">
+        <h6>Links</h6>
+        <a href="/" class="d-block text-white">Home</a>
+        <a href="/videos" class="d-block text-white">Videos</a>
+        <a href="#" class="d-block text-white">Terms of Service</a>
+      </div>
+      <div class="col-md-3">
+        <h6>Follow Us</h6>
+        <div class="social-icons">
+          <a href="#"><i class="fab fa-facebook"></i></a>
+          <a href="#"><i class="fab fa-twitter"></i></a>
+          <a href="#"><i class="fab fa-youtube"></i></a>
+          <a href="#"><i class="fab fa-instagram"></i></a>
+        </div>
+      </div>
+    </div>
+    <hr>
+    <p class="text-center mb-0">&copy; {{ year }} Prime Updates KE. All rights reserved.</p>
+  </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
