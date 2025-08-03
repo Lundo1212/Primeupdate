@@ -1,60 +1,70 @@
-{% extends "base.html" %}
-{% block title %}Home – Prime Updates KE{% endblock %}
+{% extends 'base.html' %}
 
 {% block content %}
-<div class="breaking-banner">
-  <div class="breaking-text" style="font-size: 1.5rem; font-weight: bold; font-style: italic; animation: scrollBanner 10s linear infinite; white-space: nowrap;">
-    <span style="color:#006600;">B</span><span style="color:#ff0000;">R</span><span style="color:#000000;">E</span><span style="color:#006600;">A</span>
-    <span style="color:#ff0000;">K</span><span style="color:#000000;">I</span><span style="color:#006600;">N</span><span style="color:#ff0000;">G</span>
-    <span>&nbsp;</span><span style="color:#000000;">N</span><span style="color:#006600;">E</span><span style="color:#ff0000;">W</span><span style="color:#000000;">S</span>
-  </div>
-</div>
+<div class="container mt-3">
 
-<div class="breaking-headlines-container" style="overflow:hidden; height:40px; background:#fff;">
-  <div class="breaking-headlines-track" style="display: flex; gap: 60px; white-space: nowrap; animation: scrollHeadlines 25s linear infinite; padding-left: 100%;">
-    {% for post in breaking_news[:3] %}
-      <div class="headline-item" style="font-size: 1rem; font-weight: 600; color: #222;">
-        🔴 <strong>{{ post.title }}</strong>
+  <!-- Hero slideshow -->
+  <div class="hero">
+    <div class="row">
+      {% for post in top_posts %}
+      <div class="col-md-4">
+        <div class="card h-100">
+          <img src="{{ url_for('uploaded_file', filename=post.image) }}" class="card-img-top" alt="Post Image">
+          <div class="card-body">
+            <h5 class="card-title">{{ post.title }}</h5>
+            <a href="/post/{{ post.id }}" class="btn btn-primary">Read More</a>
+          </div>
+        </div>
       </div>
-    {% endfor %}
+      {% endfor %}
+    </div>
   </div>
-</div>
 
-<div class="container mt-4">
+  <!-- Ad -->
+  <div class="ad-space">Ad Space 1 (728x90)</div>
+
+  <!-- Trending Stories -->
+  <h4 class="trending-header">Trending Stories</h4>
   <div class="row">
-    {% for post in top_posts %}
-    <div class="col-md-4 mb-3">
-      <div class="card h-100 shadow-sm">
-        <img src="{{ url_for('uploaded_file', filename=post.image) }}" class="card-img-top" alt="Image">
+    {% for post in trending_posts %}
+    <div class="col-md-6 mb-4">
+      <div class="card h-100">
         <div class="card-body">
-          <h5 class="card-title">{{ post.title }}</h5>
-          <a href="/post/{{ post.id }}" class="btn btn-primary">Read More</a>
+          <h5><a href="/post/{{ post.id }}">{{ post.title }}</a></h5>
+          <img src="{{ url_for('uploaded_file', filename=post.image) }}" class="img-fluid" alt="">
+          <p>{{ post.content[:200] }}...</p>
+          <a href="/post/{{ post.id }}" class="btn btn-outline-primary btn-sm">Continue Reading</a>
         </div>
       </div>
     </div>
     {% endfor %}
   </div>
 
-  <div class="ad-space">Ad Space 1</div>
+  <!-- Ad -->
+  <div class="ad-space">Ad Space 2 (300x250)</div>
 
+  <!-- Other Stories -->
+  <h4 class="other-header">Other Stories</h4>
   <div class="row">
     {% for post in posts %}
     <div class="col-md-6 mb-4">
-      <div class="card">
-        <img src="{{ url_for('uploaded_file', filename=post.image) }}" class="card-img-top" alt="News Image">
+      <div class="card h-100">
         <div class="card-body">
-          <h4><a href="/post/{{ post.id }}">{{ post.title }}</a></h4>
-          <p>{{ post.content[:250] }}...</p>
-          <a href="/post/{{ post.id }}" class="btn btn-outline-primary">Continue reading</a>
+          <h5><a href="/post/{{ post.id }}">{{ post.title }}</a></h5>
+          <img src="{{ url_for('uploaded_file', filename=post.image) }}" class="img-fluid" alt="">
+          <p>{{ post.content[:200] }}...</p>
+          <a href="/post/{{ post.id }}" class="btn btn-outline-secondary btn-sm">Read More</a>
         </div>
       </div>
     </div>
     {% endfor %}
   </div>
 
-  <div class="ad-space">Ad Space 2</div>
+  <!-- Ad -->
+  <div class="ad-space">Ad Space 3 (160x600)</div>
 
-  <form action="/subscribe" method="POST" class="mt-5">
+  <!-- Subscribe Form -->
+  <form action="/subscribe" method="POST" class="mt-4">
     <div class="mb-3">
       <label for="email">Subscribe to Updates:</label>
       <input type="email" name="email" class="form-control" placeholder="Enter your email" required>
@@ -62,25 +72,5 @@
     <button type="submit" class="btn btn-success">Subscribe</button>
   </form>
 
-  <div class="ad-space">Ad Space 3</div>
 </div>
 {% endblock %}
-
-{% block extra_scripts %}
-<style>
-@keyframes scrollBanner {
-  0% { transform: translateX(100%); }
-  100% { transform: translateX(-100%); }
-}
-@keyframes scrollHeadlines {
-  0% { transform: translateX(0); }
-  100% { transform: translateX(-100%); }
-}
-.breaking-headlines-container:hover .breaking-headlines-track {
-  animation-play-state: paused;
-}
-</style>
-{% endblock %}
-
-
-
