@@ -18,27 +18,16 @@
       text-align: center;
       position: relative;
     }
-    .categories-bar {
-      display: flex;
-      overflow-x: auto;
-      background-color: #003366;
-      padding: 10px;
-      gap: 15px;
-      justify-content: start;
-      white-space: nowrap;
-    }
-    .categories-bar a {
+    .logout {
+      position: absolute;
+      right: 20px;
+      top: 20px;
       color: white;
       text-decoration: none;
-      padding: 8px 16px;
-      background-color: #0059b3;
-      border-radius: 20px;
-      font-size: 0.9rem;
-      flex-shrink: 0;
     }
     .admin-container {
       width: 90%;
-      max-width: 800px;
+      max-width: 900px;
       margin: 30px auto;
       background: white;
       padding: 25px;
@@ -74,13 +63,6 @@
       align-items: center;
       flex-wrap: wrap;
     }
-    .logout {
-      position: absolute;
-      right: 20px;
-      top: 20px;
-      color: white;
-      text-decoration: none;
-    }
     .delete-btn {
       background: #dc3545;
       color: white;
@@ -110,15 +92,6 @@
   <a href="/logout" class="logout">Logout</a>
 </header>
 
-<div class="categories-bar">
-  <a href="/category/Politics">Politics</a>
-  <a href="/category/Business">Business</a>
-  <a href="/category/Sports">Sports</a>
-  <a href="/category/Entertainment">Entertainment</a>
-  <a href="/category/Technology">Technology</a>
-  <a href="/category/Health">Health</a>
-</div>
-
 <div class="admin-container">
   <h2>Welcome, {{ username }}</h2>
   <form action="/post" method="POST" enctype="multipart/form-data">
@@ -135,6 +108,7 @@
       <option>Technology</option>
       <option>Health</option>
     </select>
+    <textarea name="adsense_code" rows="4" placeholder="Paste Google AdSense Code Here (Optional)"></textarea>
     <button type="submit">Publish News</button>
   </form>
 
@@ -155,3 +129,4 @@
 
 </body>
 </html>
+
