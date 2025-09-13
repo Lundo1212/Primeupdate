@@ -3,28 +3,21 @@ from flask import Flask, render_template, request, redirect, url_for, session, s
 from werkzeug.utils import secure_filename
 
 app = Flask(__name__)
-app.secret_key = "supersecretkey"  # required for sessions
+app.secret_key = "supersecretkey"
 
-# Upload folder
 UPLOAD_FOLDER = os.path.join(app.root_path, 'static', 'uploads')
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
-# In-memory storage
 posts = []
 trending = []
 breaking_news = []
+adsense_code = ""
 
-# Admin credentials
 ADMIN_USERNAME = "admin"
 ADMIN_PASSWORD = "password123"
 
-# AdSense code storage (in-memory)
-adsense_code = ""
-
-
-# -------------------- PUBLIC ROUTES --------------------
-
+# -------------------- PUBLIC --------------------
 @app.route('/')
 def index():
     top_posts = posts[:3]
@@ -43,20 +36,13 @@ def view_post(post_id):
     post = next((p for p in posts if p['id'] == post_id), None)
     if not post:
         return "Post not found", 404
-    return render_template(
-        "post.html",
-        post=post,
-        breaking_news=breaking_news
-    )
+    return render_template("post.html", post=post, breaking_news=breaking_news)
 
-# Serve uploaded files
 @app.route('/uploads/<filename>')
 def uploaded_file(filename):
     return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
 
-
-# -------------------- ADMIN ROUTES --------------------
-
+# -------------------- ADMIN --------------------
 @app.route('/admin/login', methods=['GET', 'POST'])
 def admin_login():
     if request.method == 'POST':
@@ -69,12 +55,10 @@ def admin_login():
             return render_template("login.html", error="Invalid credentials")
     return render_template("login.html")
 
-
 @app.route('/admin/logout')
 def admin_logout():
     session.pop('admin_logged_in', None)
     return redirect(url_for('index'))
-
 
 @app.route('/admin', methods=['GET', 'POST'])
 def add_post():
@@ -117,9 +101,7 @@ def add_post():
         adsense_code=adsense_code
     )
 
-
-# -------------------- EDIT / DELETE ROUTES --------------------
-
+# -------------------- EDIT / DELETE --------------------
 @app.route('/admin/edit/<int:post_id>', methods=['GET', 'POST'])
 def edit_post(post_id):
     if not session.get('admin_logged_in'):
@@ -140,7 +122,6 @@ def edit_post(post_id):
             image_file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
             post['image'] = filename
 
-        # Update trending/breaking lists
         if post in trending: trending.remove(post)
         if post in breaking_news: breaking_news.remove(post)
         if post['category'].lower() == "trending": trending.insert(0, post)
@@ -149,7 +130,6 @@ def edit_post(post_id):
         return redirect(url_for('add_post'))
 
     return render_template('edit_post.html', post=post)
-
 
 @app.route('/admin/delete/<int:post_id>')
 def delete_post(post_id):
@@ -164,9 +144,7 @@ def delete_post(post_id):
         if post in breaking_news: breaking_news.remove(post)
     return redirect(url_for('add_post'))
 
-
-# -------------------- GOOGLE ADSENSE --------------------
-
+# -------------------- ADSENSE --------------------
 @app.route('/admin/update_adsense', methods=['POST'])
 def update_adsense():
     global adsense_code
@@ -175,9 +153,7 @@ def update_adsense():
     adsense_code = request.form['adsense_code']
     return redirect(url_for('add_post'))
 
-
 # -------------------- MAIN --------------------
-
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
     app.run(host="0.0.0.0", port=port, debug=True)

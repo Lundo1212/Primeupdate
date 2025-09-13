@@ -1,77 +1,19 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Admin Login – PrimeUpdates KE</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
-    <style>
-        body {
-            background: #f9f9f9;
-            font-family: 'Segoe UI', sans-serif;
-        }
-        .login-container {
-            max-width: 400px;
-            margin: 80px auto;
-            padding: 30px;
-            background-color: white;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-            border-radius: 10px;
-        }
-        .login-container h2 {
-            text-align: center;
-            margin-bottom: 20px;
-            color: #004080;
-        }
-        input[type="text"], input[type="password"] {
-            width: 100%;
-            padding: 12px;
-            margin: 8px 0 16px;
-            border: 1px solid #ccc;
-            border-radius: 8px;
-        }
-        button {
-            width: 100%;
-            background-color: #004080;
-            color: white;
-            padding: 12px;
-            border: none;
-            border-radius: 8px;
-            font-size: 16px;
-        }
-        button:hover {
-            background-color: #003060;
-        }
-        .error {
-            color: red;
-            text-align: center;
-        }
-        .back-link {
-            text-align: center;
-            margin-top: 15px;
-        }
-        .back-link a {
-            color: #004080;
-            text-decoration: none;
-        }
-    </style>
-</head>
-<body>
-    <div class="login-container">
-        <h2>Admin Login</h2>
-        {% with messages = get_flashed_messages() %}
-          {% if messages %}
-            <div class="error">{{ messages[0] }}</div>
-          {% endif %}
-        {% endwith %}
-        <form method="POST" action="/login">
-            <input type="text" name="username" placeholder="Enter Username" required>
-            <input type="password" name="password" placeholder="Enter Password" required>
-            <button type="submit">Login</button>
-        </form>
-        <div class="back-link">
-            <a href="/">← Back to Home</a>
-        </div>
-    </div>
-</body>
-</html>
+{% extends 'base.html' %}
 
+{% block content %}
+<div class="container mt-5" style="max-width: 400px;">
+    <h3 class="mb-3">Admin Login</h3>
+    <form method="POST" action="/admin/login">
+        <div class="mb-3">
+            <input type="text" class="form-control" name="username" placeholder="Username" required>
+        </div>
+        <div class="mb-3">
+            <input type="password" class="form-control" name="password" placeholder="Password" required>
+        </div>
+        {% if error %}
+        <div class="alert alert-danger">{{ error }}</div>
+        {% endif %}
+        <button type="submit" class="btn btn-primary w-100">Login</button>
+    </form>
+</div>
+{% endblock %}
