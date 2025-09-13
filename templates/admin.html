@@ -1,57 +1,29 @@
+{% extends "base.html" %}
 
 {% block content %}
-
-<!-- Hero Carousel -->
-<div id="heroCarousel" class="carousel slide mt-3" data-bs-ride="carousel">
-  <div class="carousel-inner">
-    {% for post in top_posts %}
-    <div class="carousel-item {% if loop.first %}active{% endif %}">
-      <img src="{{ url_for('uploaded_file', filename=post.image) }}" class="d-block w-100" alt="...">
-      <div class="carousel-caption d-none d-md-block">
-        <h5>{{ post.title }}</h5>
-        <a href="/post/{{ post.id }}" class="btn btn-primary">Read More</a>
-      </div>
+<h2 class="mb-3">Add News Post</h2>
+<form action="{{ url_for('add_post') }}" method="POST" enctype="multipart/form-data">
+    <div class="mb-2">
+        <label>Title</label>
+        <input type="text" name="title" class="form-control" required>
     </div>
-    {% endfor %}
-  </div>
-</div>
-
-<div class="ad-space my-3 text-center border p-3">Ad Space 1 (728x90)</div>
-
-<!-- Trending Stories -->
-<h3 class="mt-4 mb-3 text-dark fw-bold">TRENDING STORIES</h3>
-<div class="row">
-  {% for post in trending_posts %}
-  <div class="col-md-4 mb-3">
-    <div class="card">
-      <img src="{{ url_for('uploaded_file', filename=post.image) }}" class="card-img-top" alt="...">
-      <div class="card-body">
-        <h5 class="card-title">{{ post.title }}</h5>
-        <p>{{ post.content[:120] }}...</p>
-        <a href="/post/{{ post.id }}" class="btn btn-outline-primary">Read More</a>
-      </div>
+    <div class="mb-2">
+        <label>Content</label>
+        <textarea name="content" class="form-control" rows="5" required></textarea>
     </div>
-  </div>
-  {% endfor %}
-</div>
-
-<div class="ad-space my-3 text-center border p-3">Ad Space 2 (300x250)</div>
-
-<!-- Other Stories -->
-<h3 class="mt-4 mb-3 text-dark fw-bold" style="text-decoration: underline;">Other Stories</h3>
-<div>
-  {% for post in posts %}
-  <div class="card mb-3">
-    <div class="card-body">
-      <h4><a href="/post/{{ post.id }}">{{ post.title }}</a></h4>
-      <img src="{{ url_for('uploaded_file', filename=post.image) }}" class="img-fluid mb-2" alt="">
-      <p>{{ post.content[:250] }}...</p>
-      <a href="/post/{{ post.id }}" class="btn btn-outline-primary">Continue Reading</a>
+    <div class="mb-2">
+        <label>Category</label>
+        <select name="category" class="form-select">
+            <option value="General">General</option>
+            <option value="Breaking">Breaking</option>
+            <option value="Trending">Trending</option>
+        </select>
     </div>
-  </div>
-  {% endfor %}
-</div>
-
-<div class="ad-space my-3 text-center border p-3">Ad Space 3 (160x600)</div>
-
+    <div class="mb-2">
+        <label>Image</label>
+        <input type="file" name="image" class="form-control">
+    </div>
+    <button type="submit" class="btn btn-success">Add Post</button>
+    <a href="{{ url_for('index') }}" class="btn btn-primary">Back to Home</a>
+</form>
 {% endblock %}
