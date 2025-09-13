@@ -1,153 +1,74 @@
-from flask import Flask, render_template, request, redirect, url_for, session, flash, send_from_directory
-from werkzeug.utils import secure_filename
-import os
-from functools import wraps
+from flask import Flask, render_template, request, redirect, url_for
 from datetime import datetime
-import sqlite3
 
 app = Flask(__name__)
-app.secret_key = 'your-secret-key'
-UPLOAD_FOLDER = 'static/uploads'
-app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
-# --- Utility Functions ---
-def get_db_connection():
-    conn = sqlite3.connect('news.db')
-    conn.row_factory = sqlite3.Row
-    return conn
+# Sample data (replace with DB later)
+posts = [
+    {
+        "id": 1,
+        "title": "Government Unveils New Policy",
+        "content": "The government has unveiled a new policy...",
+        "views": 1200,
+        "category": "Politics",
+        "image": "https://via.placeholder.com/800x400.png?text=Policy+News",
+        "date": datetime.now()
+    },
+    {
+        "id": 2,
+        "title": "Sports Championship Kicks Off",
+        "content": "The annual sports championship has started...",
+        "views": 980,
+        "category": "Sports",
+        "image": "https://via.placeholder.com/800x400.png?text=Sports+News",
+        "date": datetime.now()
+    },
+    {
+        "id": 3,
+        "title": "Tech Giants Announce Merger",
+        "content": "Two leading tech companies have announced a merger...",
+        "views": 1500,
+        "category": "Technology",
+        "image": "https://via.placeholder.com/800x400.png?text=Tech+News",
+        "date": datetime.now()
+    }
+]
 
-def login_required(f):
-    @wraps(f)
-    def decorated_function(*args, **kwargs):
-        if 'username' not in session:
-            flash('Login required to access admin panel.')
-            return redirect('/login')
-        return f(*args, **kwargs)
-    return decorated_function
-
-# --- Routes ---
 @app.route('/')
 def index():
-    conn = get_db_connection()
-    posts = conn.execute('SELECT * FROM posts ORDER BY created_at DESC').fetchall()
-    top_posts = conn.execute('SELECT * FROM posts ORDER BY created_at DESC LIMIT 3').fetchall()
-    breaking_news = conn.execute('SELECT title FROM posts ORDER BY created_at DESC LIMIT 5').fetchall()
-    conn.close()
-    return render_template('index.html', posts=posts, top_posts=top_posts, breaking_news=breaking_news, year=datetime.now().year)
+    breaking_news = posts[:5]  # first 5 for breaking news
+    trending = sorted(posts, key=lambda x: x['views'], reverse=True)[:3]  # top 3 most viewed
+    return render_template("index.html", posts=posts, breaking_news=breaking_news, trending=trending)
 
 @app.route('/post/<int:post_id>')
 def view_post(post_id):
-    conn = get_db_connection()
-    post = conn.execute('SELECT * FROM posts WHERE id = ?', (post_id,)).fetchone()
-    conn.close()
-    return render_template('post.html', post=post)
+    post = next((p for p in posts if p["id"] == post_id), None)
+    if not post:
+        return "Post not found", 404
+    breaking_news = posts[:5]
+    trending = sorted(posts, key=lambda x: x['views'], reverse=True)[:3]
+    return render_template("post.html", post=post, breaking_news=breaking_news, trending=trending)
 
-@app.route('/category/<category>')
-def category_page(category):
-    conn = get_db_connection()
-    posts = conn.execute('SELECT * FROM posts WHERE category = ? ORDER BY created_at DESC', (category,)).fetchall()
-    conn.close()
-    return render_template('index.html', posts=posts, top_posts=posts[:3], breaking_news=posts[:5], year=datetime.now().year)
-
-@app.route('/videos')
-def video_posts():
-    conn = get_db_connection()
-    posts = conn.execute('SELECT * FROM posts WHERE video_url IS NOT NULL ORDER BY created_at DESC').fetchall()
-    conn.close()
-    return render_template('index.html', posts=posts, top_posts=posts[:3], breaking_news=posts[:5], year=datetime.now().year)
-
-@app.route('/admin')
-@login_required
-def admin():
-    conn = get_db_connection()
-    posts = conn.execute('SELECT * FROM posts ORDER BY created_at DESC').fetchall()
-    conn.close()
-    return render_template('admin.html', posts=posts, username=session['username'])
-
-@app.route('/login', methods=['GET', 'POST'])
-def login():
+@app.route('/add', methods=['GET', 'POST'])
+def add_post():
     if request.method == 'POST':
-        username = request.form['username']
-        password = request.form['password']
-        conn = get_db_connection()
-        user = conn.execute('SELECT * FROM admins WHERE username = ? AND password = ?', (username, password)).fetchone()
-        conn.close()
-        if user:
-            session['username'] = username
-            return redirect('/admin')
-        flash('Invalid credentials.')
-    return render_template('login.html')
+        new_post = {
+            "id": len(posts) + 1,
+            "title": request.form["title"],
+            "content": request.form["content"],
+            "views": 0,
+            "category": request.form["category"],
+            "image": request.form["image"],
+            "date": datetime.now()
+        }
+        posts.append(new_post)
+        return redirect(url_for("index"))
+    breaking_news = posts[:5]
+    trending = sorted(posts, key=lambda x: x['views'], reverse=True)[:3]
+    return render_template("add_post.html", breaking_news=breaking_news, trending=trending)
 
-@app.route('/logout')
-def logout():
-    session.clear()
-    flash('Logged out.')
-    return redirect('/')
-
-@app.route('/post', methods=['POST'])
-@login_required
-def create_post():
-    title = request.form['title']
-    content = request.form['content']
-    category = request.form['category']
-    video_url = request.form.get('video_url', None)
-    file = request.files['image']
-    filename = secure_filename(file.filename)
-    file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-
-    conn = get_db_connection()
-    conn.execute('INSERT INTO posts (title, content, image, category, video_url, created_at) VALUES (?, ?, ?, ?, ?, ?)',
-                 (title, content, filename, category, video_url, datetime.now()))
-    conn.commit()
-    conn.close()
-    flash('News posted successfully!')
-    return redirect('/admin')
-
-@app.route('/subscribe', methods=['POST'])
-def subscribe():
-    email = request.form['email']
-    conn = get_db_connection()
-    conn.execute('INSERT INTO subscribers (email) VALUES (?)', (email,))
-    conn.commit()
-    conn.close()
-    flash('Subscribed successfully!')
-    return redirect('/')
-
-@app.route('/static/uploads/<filename>')
-def uploaded_file(filename):
-    return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
-
-# --- Initialize Database ---
-def initialize_db():
-    conn = sqlite3.connect('news.db')
-    conn.execute('''CREATE TABLE IF NOT EXISTS posts (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        title TEXT NOT NULL,
-        content TEXT NOT NULL,
-        image TEXT,
-        category TEXT,
-        video_url TEXT,
-        created_at TEXT NOT NULL
-    )''')
-    conn.execute('''CREATE TABLE IF NOT EXISTS admins (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        username TEXT NOT NULL,
-        password TEXT NOT NULL
-    )''')
-    conn.execute('''CREATE TABLE IF NOT EXISTS subscribers (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        email TEXT NOT NULL
-    )''')
-    conn.execute('INSERT INTO admins (username, password) VALUES (?, ?)', ('admin', 'admin123'))
-    conn.commit()
-    conn.close()
-
-# --- Main ---
 if __name__ == '__main__':
-    if not os.path.exists('news.db'):
-        initialize_db()
-    port = int(os.environ.get("PORT", 5000))
-    app.run(host='0.0.0.0', port=port, debug=True)
+    app.run(debug=True)
 
 
 
