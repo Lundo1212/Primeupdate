@@ -2,25 +2,21 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Prime Updates KE</title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
   <style>
-    body {
-      font-family: 'Roboto', sans-serif;
-      background: #f9f9f9;
-    }
+    body { font-family: 'Roboto', sans-serif; background: #f8f9fa; }
+
     header {
-      background: linear-gradient(to right, #1a1a1a, #004080);
+      background: linear-gradient(90deg, #1a1a1a, #004080);
       color: white;
       padding: 1rem;
     }
-    .logo-text {
-      font-size: 1.7rem;
-      font-weight: 700;
-    }
+    .logo-text { font-size: 1.5rem; font-weight: bold; }
+
     .category-bar {
       overflow-x: auto;
       white-space: nowrap;
@@ -28,60 +24,30 @@
       padding: 10px;
     }
     .category-bar a {
-      color: #fff;
-      margin: 0 12px;
+      color: white;
+      margin: 0 10px;
       font-weight: bold;
       text-decoration: none;
     }
-    .breaking-title {
-      font-size: 1.2rem;
+    .category-bar a:hover { text-decoration: underline; }
+
+    .breaking-banner {
+      background: #000;
+      color: white;
+      font-weight: bold;
       font-style: italic;
-      font-weight: bold;
+      padding: 5px;
       text-align: center;
-      white-space: nowrap;
-      overflow: hidden;
-      color: black;
+      font-size: 1.2rem;
     }
-    .breaking-title span:nth-child(3n+1) { color: green; }
-    .breaking-title span:nth-child(3n+2) { color: red; }
-    .breaking-title span:nth-child(3n+3) { color: black; }
+    .breaking-banner span:nth-child(3n+1) { color: #006600; } /* Green */
+    .breaking-banner span:nth-child(3n+2) { color: #ff0000; } /* Red */
+    .breaking-banner span:nth-child(3n+3) { color: #000000; } /* Black */
 
-    .breaking-news-strip {
-      background: #fff0f0;
-      overflow: hidden;
-      position: relative;
-    }
-    .breaking-marquee {
-      display: inline-block;
-      white-space: nowrap;
-      animation: slide-left 20s linear infinite;
+    .marquee {
+      background: #f2f2f2;
+      padding: 5px;
       font-weight: bold;
-    }
-    @keyframes slide-left {
-      0%   { transform: translateX(100%); }
-      100% { transform: translateX(-100%); }
-    }
-
-    .hero {
-      background: #ffe6e6;
-      padding: 20px;
-    }
-    .trending-header, .other-header {
-      font-weight: bold;
-      color: black;
-      margin: 30px 0 15px;
-      text-transform: uppercase;
-    }
-    .other-header {
-      text-decoration: underline;
-    }
-
-    .ad-space {
-      background: #d1ecf1;
-      border: 1px dashed #0c5460;
-      padding: 15px;
-      text-align: center;
-      margin: 20px 0;
     }
 
     footer {
@@ -89,34 +55,24 @@
       color: white;
       padding: 2rem 1rem;
       margin-top: 40px;
+      text-align: center;
     }
-    .footer-links a {
-      color: #fff;
-      margin-right: 12px;
-      text-decoration: none;
-    }
-    .footer-links a:hover {
-      text-decoration: underline;
-    }
-    .social-icons a {
-      color: white;
-      margin-right: 15px;
-      font-size: 1.4rem;
-    }
-    .footer-credit {
-      font-style: italic;
-      color: rgba(255, 255, 255, 0.3);
-    }
+    .footer-links a { color: white; margin: 0 10px; text-decoration: none; }
+    .footer-links a:hover { text-decoration: underline; }
+    .social-icons a { color: white; margin: 0 10px; font-size: 1.2rem; }
+    .designed { color: #555; font-size: 0.9rem; font-style: italic; }
   </style>
 </head>
 <body>
 
-<header class="d-flex justify-content-between align-items-center px-3">
+<header class="d-flex justify-content-between align-items-center">
   <div class="d-flex align-items-center">
-    <img src="{{ url_for('static', filename='logo.JPG') }}" class="rounded-circle me-2" style="width: 45px; height: 45px;">
+    <img src="{{ url_for('static', filename='logo.JPG') }}" alt="Logo" class="rounded-circle" style="width:40px;height:40px;margin-right:10px;">
     <span class="logo-text">Prime Updates KE</span>
   </div>
-  <a href="/admin" class="btn btn-sm btn-light">Admin</a>
+  <div>
+    <a href="/admin" class="btn btn-sm btn-danger">Admin</a>
+  </div>
 </header>
 
 <div class="category-bar">
@@ -127,47 +83,49 @@
   <a href="/category/Entertainment">Entertainment</a>
   <a href="/category/Technology">Technology</a>
   <a href="/category/Health">Health</a>
-  <a href="/category/Lifestyle">Lifestyle</a>
   <a href="/category/World">World</a>
+  <a href="/category/Lifestyle">Lifestyle</a>
+  <a href="/category/Opinion">Opinion</a>
 </div>
 
-<div class="breaking-title mt-2">
-  {% for l in 'BREAKING NEWS' %}
-    <span>{{ l }}</span>
-  {% endfor %}
+<div class="breaking-banner">
+  <marquee direction="right" scrollamount="7">
+    <span>B</span><span>R</span><span>E</span><span>A</span><span>K</span><span>I</span><span>N</span><span>G</span>&nbsp;
+    <span>N</span><span>E</span><span>W</span><span>S</span>
+  </marquee>
 </div>
 
-<div class="breaking-news-strip">
-  <div class="breaking-marquee">
-    {% for post in breaking_news[:3] %}
-      🔴 {{ post.title }} &nbsp;&nbsp;&nbsp;
+<div class="marquee">
+  <marquee direction="left" scrollamount="5">
+    {% for headline in breaking_news[:3] %}
+      🔴 {{ headline.title }} &nbsp;&nbsp;&nbsp;
     {% endfor %}
-  </div>
+  </marquee>
 </div>
 
-{% block content %}{% endblock %}
+<div class="container">
+  {% block content %}{% endblock %}
+</div>
 
 <footer>
-  <div class="container">
-    <p class="mb-2">Stay Informed. Stay Empowered. Stay Ahead with <strong>PrimeUpdates KE</strong>.</p>
-    <div class="footer-links mb-2">
-      <a href="/">Home</a>
-      <a href="/category/Politics">Politics</a>
-      <a href="/category/Entertainment">Entertainment</a>
-      <a href="/category/Business">Business</a>
-      <a href="/category/Sports">Sports</a>
-    </div>
-    <div class="social-icons">
-      <a href="#"><i class="fab fa-facebook"></i></a>
-      <a href="#"><i class="fab fa-twitter"></i></a>
-      <a href="#"><i class="fab fa-youtube"></i></a>
-      <a href="#"><i class="fab fa-instagram"></i></a>
-    </div>
-    <p class="mt-3 footer-credit text-center">Designed by David Kivinda</p>
+  <p class="mb-2">Stay Informed. Stay Empowered. Stay Ahead with <strong>Prime Updates KE</strong>.</p>
+  <div class="footer-links mb-2">
+    <a href="/">Home</a>
+    <a href="/category/Politics">Politics</a>
+    <a href="/category/Entertainment">Entertainment</a>
+    <a href="/category/Business">Business</a>
+    <a href="/category/Sports">Sports</a>
   </div>
+  <div class="social-icons mb-2">
+    <a href="#"><i class="fab fa-facebook"></i></a>
+    <a href="#"><i class="fab fa-twitter"></i></a>
+    <a href="#"><i class="fab fa-youtube"></i></a>
+    <a href="#"><i class="fab fa-instagram"></i></a>
+  </div>
+  <p class="mt-2">&copy; {{ year }} Prime Updates KE. All rights reserved.</p>
+  <p class="designed">designed by david kivinda</p>
 </footer>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
-
