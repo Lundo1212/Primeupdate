@@ -1,49 +1,83 @@
-{% extends 'base.html' %}
+{% extends "base.html" %}
+
 {% block content %}
-<h2 class="mt-3">Admin Dashboard</h2>
+<div class="container mt-4">
+  <h2>Admin Dashboard</h2>
 
-<h4 class="mt-4">Add New Post</h4>
-<form method="POST" enctype="multipart/form-data">
-  <input type="text" name="title" placeholder="Post Title" class="form-control mb-2" required>
-  <textarea name="content" placeholder="Post Content" class="form-control mb-2" required></textarea>
-  <select name="category" class="form-control mb-2" required>
-    <option value="" disabled selected>Select Category</option>
-    <option value="Breaking">Breaking</option>
-    <option value="Trending">Trending</option>
-    <option value="Politics">Politics</option>
-    <option value="Business">Business</option>
-    <option value="Sports">Sports</option>
-    <option value="Entertainment">Entertainment</option>
-    <option value="Technology">Technology</option>
-    <option value="Health">Health</option>
-    <option value="World">World</option>
-    <option value="Lifestyle">Lifestyle</option>
-    <option value="Opinion">Opinion</option>
-  </select>
-  <input type="file" name="image" class="form-control mb-2">
-  <button class="btn btn-primary">Add Post</button>
-</form>
+  <!-- Flash Messages -->
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      {% for category, message in messages %}
+        <div class="alert alert-{{ category }}">{{ message }}</div>
+      {% endfor %}
+    {% endif %}
+  {% endwith %}
 
-<h4 class="mt-5">All Posts</h4>
-<table class="table table-bordered">
-  <thead>
-    <tr><th>ID</th><th>Title</th><th>Category</th><th>Actions</th></tr>
-  </thead>
-  <tbody>
-    {% for post in posts %}
-    <tr>
-      <td>{{ post.id }}</td>
-      <td>{{ post.title }}</td>
-      <td>{{ post.category }}</td>
-      <td>
-        <a href="/post/{{ post.id }}" class="btn btn-info btn-sm">View</a>
-        <a href="/admin/delete/{{ post.id }}" class="btn btn-danger btn-sm">Delete</a>
-      </td>
-    </tr>
-    {% endfor %}
-  </tbody>
-</table>
+  <!-- Add New Post -->
+  <h4 class="mt-4">Add New Post</h4>
+  <form method="POST" enctype="multipart/form-data" class="mb-4">
+    <div class="mb-2">
+      <input type="text" name="title" placeholder="Post Title" class="form-control" required>
+    </div>
+    <div class="mb-2">
+      <textarea name="content" placeholder="Post Content" class="form-control" rows="4" required></textarea>
+    </div>
+    <div class="mb-2">
+      <select name="category" class="form-control" required>
+        <option value="" disabled selected>Select Category</option>
+        <option value="Breaking">Breaking</option>
+        <option value="Trending">Trending</option>
+        <option value="Politics">Politics</option>
+        <option value="Business">Business</option>
+        <option value="Sports">Sports</option>
+        <option value="Entertainment">Entertainment</option>
+        <option value="Technology">Technology</option>
+        <option value="Health">Health</option>
+        <option value="World">World</option>
+        <option value="Lifestyle">Lifestyle</option>
+        <option value="Opinion">Opinion</option>
+      </select>
+    </div>
+    <div class="mb-2">
+      <input type="file" name="image" class="form-control">
+    </div>
+    <button type="submit" class="btn btn-primary">Add Post</button>
+  </form>
 
-<a href="/admin/logout" class="btn btn-secondary mt-3">Logout</a>
+  <!-- All Posts -->
+  <h4 class="mt-5">All Posts</h4>
+  <table class="table table-bordered">
+    <thead class="table-light">
+      <tr>
+        <th>ID</th>
+        <th>Title</th>
+        <th>Category</th>
+        <th>Image</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for post in posts %}
+      <tr>
+        <td>{{ post.id }}</td>
+        <td>{{ post.title }}</td>
+        <td>{{ post.category }}</td>
+        <td>
+          {% if post.image %}
+            <img src="{{ url_for('uploaded_file', filename=post.image) }}" width="80">
+          {% else %}
+            No Image
+          {% endif %}
+        </td>
+        <td>
+          <a href="/post/{{ post.id }}" class="btn btn-info btn-sm">View</a>
+          <a href="/admin/delete/{{ post.id }}" class="btn btn-danger btn-sm">Delete</a>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  <a href="/admin/logout" class="btn btn-secondary mt-3">Logout</a>
+</div>
 {% endblock %}
-
