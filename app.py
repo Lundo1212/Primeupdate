@@ -1,115 +1,100 @@
 import os
-from flask import Flask, render_template, request, redirect, url_for, session, flash, send_from_directory
-from flask_sqlalchemy import SQLAlchemy
+from flask import Flask, render_template, request, redirect, url_for, send_from_directory
+from werkzeug.utils import secure_filename
 
 app = Flask(__name__)
-app.secret_key = "supersecretkey"  # change to something strong in production
 
-# Database setup
-app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///news.db"
-app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
-app.config["UPLOAD_FOLDER"] = "static/uploads"
-db = SQLAlchemy(app)
+# Folder for uploaded images
+UPLOAD_FOLDER = os.path.join(app.root_path, 'static', 'uploads')
+os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
-
-# Database model
-class Post(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    title = db.Column(db.String(255), nullable=False)
-    content = db.Column(db.Text, nullable=False)
-    category = db.Column(db.String(100), nullable=False)
-    image = db.Column(db.String(255), nullable=True)
+# Temporary in-memory storage (replace with DB later)
+posts = []
+breaking_news = []
+trending = []
 
 
-# Home Page
-@app.route("/")
+# -------------------- ROUTES --------------------
+
+@app.route('/')
 def index():
-    posts = Post.query.order_by(Post.id.desc()).all()
-    categories = [
-        "Breaking",
-        "Trending",
-        "Politics",
-        "Business",
-        "Sports",
-        "Entertainment",
-        "Technology",
-        "Health",
-        "World",
-        "Lifestyle",
-        "Opinion",
-    ]
-    return render_template("index.html", posts=posts, categories=categories)
+    """Homepage showing all posts + breaking + trending"""
+    return render_template(
+        "index.html",
+        posts=posts,
+        breaking_news=breaking_news,
+        trending=trending
+    )
 
 
-# Category Page
-@app.route("/category/<string:category>")
-def category_page(category):
-    posts = Post.query.filter_by(category=category).order_by(Post.id.desc()).all()
-    return render_template("category.html", posts=posts, category=category)
+@app.route('/post/<int:post_id>')
+def view_post(post_id):
+    """View single post"""
+    post = next((p for p in posts if p['id'] == post_id), None)
+    if not post:
+        return "Post not found", 404
+    return render_template(
+        "post.html",
+        post=post,
+        breaking_news=breaking_news,
+        trending=trending
+    )
 
 
-# Admin Login
-@app.route("/admin/login", methods=["GET", "POST"])
-def admin_login():
-    if request.method == "POST":
-        username = request.form["username"]
-        password = request.form["password"]
+@app.route('/admin', methods=['GET', 'POST'])
+def add_post():
+    """Admin dashboard to add new posts"""
+    if request.method == 'POST':
+        title = request.form.get('title')
+        content = request.form.get('content')
+        category = request.form.get('category')
 
-        # Replace with real credentials (e.g., env vars for security)
-        if username == "admin" and password == "password":
-            session["admin_logged_in"] = True
-            return redirect("/admin")
-        else:
-            flash("Invalid credentials", "danger")
+        # Handle image upload
+        image_file = request.files.get('image')
+        filename = None
+        if image_file and image_file.filename != '':
+            filename = secure_filename(image_file.filename)
+            image_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+            image_file.save(image_path)
 
-    return render_template("login.html")
+        # Create post object
+        post = {
+            'id': len(posts) + 1,
+            'title': title,
+            'content': content,
+            'category': category,
+            'image': filename
+        }
 
+        posts.append(post)
 
-# Admin Dashboard (Add & View Posts)
-@app.route("/admin", methods=["GET", "POST"])
-def admin():
-    if "admin_logged_in" not in session:
-        return redirect("/admin/login")
+        # Add to breaking news if category matches
+        if category and category.lower() == "breaking":
+            breaking_news.insert(0, post)
 
-    if request.method == "POST":
-        title = request.form["title"]
-        content = request.form["content"]
-        category = request.form["category"]
+        # Add to trending if category matches
+        if category and category.lower() == "trending":
+            trending.insert(0, post)
 
-        image = request.files["image"]
-        image_filename = None
-        if image and image.filename != "":
-            image_filename = image.filename
-            image.save(os.path.join(app.config["UPLOAD_FOLDER"], image_filename))
+        return redirect(url_for('index'))
 
-        new_post = Post(
-            title=title, content=content, category=category, image=image_filename
-        )
-        db.session.add(new_post)
-        db.session.commit()
-
-        flash("Post added successfully!", "success")
-        return redirect("/admin")
-
-    posts = Post.query.order_by(Post.id.desc()).all()
-    return render_template("admin.html", posts=posts)
+    return render_template(
+        "admin.html",
+        posts=posts,  # Show all posts in admin page
+        breaking_news=breaking_news,
+        trending=trending
+    )
 
 
-# Admin Logout
-@app.route("/admin/logout")
-def admin_logout():
-    session.pop("admin_logged_in", None)
-    return redirect("/")
-
-
-# Uploaded Files Route
-@app.route("/uploads/<filename>")
+@app.route('/uploads/<filename>')
 def uploaded_file(filename):
-    return send_from_directory(app.config["UPLOAD_FOLDER"], filename)
+    """Serve uploaded files"""
+    return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
 
+
+# -------------------- MAIN --------------------
 
 if __name__ == "__main__":
-    os.makedirs(app.config["UPLOAD_FOLDER"], exist_ok=True)
-    with app.app_context():
-        db.create_all()
-    app.run(host="0.0.0.0", port=5000, debug=True)
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host="0.0.0.0", port=port, debug=True)
