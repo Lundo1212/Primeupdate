@@ -1,17 +1,17 @@
 import os
-from flask import Flask, render_template, request, redirect, url_for, send_from_directory, session
+from flask import Flask, render_template, request, redirect, url_for, session, send_from_directory
 
 from werkzeug.utils import secure_filename
 
 app = Flask(__name__)
-app.secret_key = "supersecretkey"  # for session management
+app.secret_key = "supersecretkey"  # Required for session
 
-# Folder for uploaded images
+# Upload folder
 UPLOAD_FOLDER = os.path.join(app.root_path, 'static', 'uploads')
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
-# Temporary in-memory storage (replace with DB later)
+# Temporary in-memory storage
 posts = []
 breaking_news = []
 trending = []
@@ -20,69 +20,48 @@ trending = []
 ADMIN_USER = "admin"
 ADMIN_PASS = "password"
 
-# -------------------- CONTEXT PROCESSOR --------------------
-# Ensures templates always have breaking_news and trending
-@app.context_processor
-def inject_globals():
-    return dict(breaking_news=breaking_news, trending=trending)
-
 # -------------------- ROUTES --------------------
 
+# Home page
 @app.route('/')
 def index():
-    # top 3 posts for hero carousel
-    top_posts = posts[-3:][::-1]
+    top_posts = posts[:3]  # Hero carousel
     trending_posts = [p for p in posts if p['category'].lower() == 'trending']
-    return render_template(
-        "index.html",
-        posts=posts[::-1],
-        top_posts=top_posts,
-        trending_posts=trending_posts
-    )
+    return render_template('index.html', posts=posts, top_posts=top_posts,
+                           trending_posts=trending_posts,
+                           breaking_news=breaking_news)
 
-
+# View post
 @app.route('/post/<int:post_id>')
 def view_post(post_id):
     post = next((p for p in posts if p['id'] == post_id), None)
     if not post:
         return "Post not found", 404
-    return render_template('post.html', post=post)
+    return render_template('post.html', post=post, breaking_news=breaking_news, trending=trending)
 
-
-@app.route('/category/<category_name>')
-def view_category(category_name):
-    category_posts = [p for p in posts if p['category'].lower() == category_name.lower()]
-    return render_template('index.html',
-                           posts=category_posts[::-1],
-                           top_posts=category_posts[-3:][::-1],
-                           trending_posts=[p for p in category_posts if p['category'].lower() == 'trending'])
-
-
-# -------------------- ADMIN --------------------
-
+# Admin login
 @app.route('/admin/login', methods=['GET', 'POST'])
 def admin_login():
     if request.method == 'POST':
-        username = request.form.get('username')
-        password = request.form.get('password')
+        username = request.form['username']
+        password = request.form['password']
         if username == ADMIN_USER and password == ADMIN_PASS:
-            session['admin_logged_in'] = True
+            session['admin'] = True
             return redirect(url_for('admin_dashboard'))
         else:
-            return render_template("login.html", error="Invalid credentials")
-    return render_template("login.html")
+            return render_template('login.html', error="Invalid credentials")
+    return render_template('login.html', breaking_news=breaking_news, trending=trending)
 
+# Admin logout
+@app.route('/admin/logout')
+def admin_logout():
+    session.pop('admin', None)
+    return redirect(url_for('index'))
 
-@app.route('/admin/dashboard')
+# Admin dashboard
+@app.route('/admin', methods=['GET', 'POST'])
 def admin_dashboard():
-    if not session.get('admin_logged_in'):
-        return redirect(url_for('admin_login'))
-    return render_template("admin.html", posts=posts[::-1])
-
-
-@app.route('/admin/add', methods=['GET', 'POST'])
-def add_post():
-    if not session.get('admin_logged_in'):
+    if not session.get('admin'):
         return redirect(url_for('admin_login'))
 
     if request.method == 'POST':
@@ -90,15 +69,14 @@ def add_post():
         content = request.form['content']
         category = request.form['category']
 
-        # Handle image upload
+        # Handle image
         image_file = request.files.get('image')
         filename = None
         if image_file and image_file.filename != '':
             filename = secure_filename(image_file.filename)
-            image_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-            image_file.save(image_path)
+            image_file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
 
-        # Create post object
+        # Create post
         post = {
             'id': len(posts) + 1,
             'title': title,
@@ -106,47 +84,37 @@ def add_post():
             'category': category,
             'image': filename
         }
-
         posts.append(post)
 
-        # Add to breaking_news or trending if needed
-        if category.lower() == "breaking":
+        # Update breaking/trending
+        if category.lower() == 'breaking':
             breaking_news.insert(0, post)
-        if category.lower() == "trending":
+        if category.lower() == 'trending':
             trending.insert(0, post)
 
         return redirect(url_for('admin_dashboard'))
 
-    return render_template("admin.html")
+    return render_template('admin.html', posts=posts, breaking_news=breaking_news, trending=trending)
 
-
+# Delete post
 @app.route('/admin/delete/<int:post_id>')
 def delete_post(post_id):
-    if not session.get('admin_logged_in'):
+    if not session.get('admin'):
         return redirect(url_for('admin_login'))
-
     global posts, breaking_news, trending
-    post_to_delete = next((p for p in posts if p['id'] == post_id), None)
-    if post_to_delete:
-        posts = [p for p in posts if p['id'] != post_id]
-        breaking_news = [p for p in breaking_news if p['id'] != post_id]
-        trending = [p for p in trending if p['id'] != post_id]
-
+    posts = [p for p in posts if p['id'] != post_id]
+    breaking_news = [p for p in breaking_news if p['id'] != post_id]
+    trending = [p for p in trending if p['id'] != post_id]
     return redirect(url_for('admin_dashboard'))
 
-
+# Serve uploaded images
 @app.route('/uploads/<filename>')
 def uploaded_file(filename):
     return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
 
-
-@app.route('/admin/logout')
-def admin_logout():
-    session.pop('admin_logged_in', None)
-    return redirect(url_for('index'))
-
-
 # -------------------- MAIN --------------------
+
 if __name__ == '__main__':
     port = int(os.environ.get("PORT", 5000))
     app.run(host="0.0.0.0", port=port, debug=True)
+
