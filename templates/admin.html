@@ -1,3 +1,4 @@
+
 {% block content %}
 
 <!-- Hero Carousel -->
@@ -5,23 +6,14 @@
   <div class="carousel-inner">
     {% for post in top_posts %}
     <div class="carousel-item {% if loop.first %}active{% endif %}">
-      {% if post.image %}
-      <img src="{{ url_for('uploaded_file', filename=post.image) }}" class="d-block w-100" alt="{{ post.title }}">
-      {% endif %}
-      <div class="carousel-caption d-none d-md-block bg-dark bg-opacity-50 rounded p-2">
+      <img src="{{ url_for('uploaded_file', filename=post.image) }}" class="d-block w-100" alt="...">
+      <div class="carousel-caption d-none d-md-block">
         <h5>{{ post.title }}</h5>
-        <p>{{ post.content[:120] }}...</p>
-        <a href="/post/{{ post.id }}" class="btn btn-primary btn-sm">Read More</a>
+        <a href="/post/{{ post.id }}" class="btn btn-primary">Read More</a>
       </div>
     </div>
     {% endfor %}
   </div>
-  <button class="carousel-control-prev" type="button" data-bs-target="#heroCarousel" data-bs-slide="prev">
-    <span class="carousel-control-prev-icon"></span>
-  </button>
-  <button class="carousel-control-next" type="button" data-bs-target="#heroCarousel" data-bs-slide="next">
-    <span class="carousel-control-next-icon"></span>
-  </button>
 </div>
 
 <div class="ad-space my-3 text-center border p-3">Ad Space 1 (728x90)</div>
@@ -32,13 +24,11 @@
   {% for post in trending_posts %}
   <div class="col-md-4 mb-3">
     <div class="card">
-      {% if post.image %}
-      <img src="{{ url_for('uploaded_file', filename=post.image) }}" class="card-img-top" alt="{{ post.title }}">
-      {% endif %}
+      <img src="{{ url_for('uploaded_file', filename=post.image) }}" class="card-img-top" alt="...">
       <div class="card-body">
         <h5 class="card-title">{{ post.title }}</h5>
         <p>{{ post.content[:120] }}...</p>
-        <a href="/post/{{ post.id }}" class="btn btn-outline-primary btn-sm">Read More</a>
+        <a href="/post/{{ post.id }}" class="btn btn-outline-primary">Read More</a>
       </div>
     </div>
   </div>
@@ -54,19 +44,14 @@
   <div class="card mb-3">
     <div class="card-body">
       <h4><a href="/post/{{ post.id }}">{{ post.title }}</a></h4>
-      {% if post.image %}
-      <img src="{{ url_for('uploaded_file', filename=post.image) }}" class="img-fluid mb-2" alt="{{ post.title }}">
-      {% endif %}
+      <img src="{{ url_for('uploaded_file', filename=post.image) }}" class="img-fluid mb-2" alt="">
       <p>{{ post.content[:250] }}...</p>
-      <a href="/post/{{ post.id }}" class="btn btn-outline-primary btn-sm">Continue Reading</a>
+      <a href="/post/{{ post.id }}" class="btn btn-outline-primary">Continue Reading</a>
     </div>
   </div>
-  {% else %}
-  <p>No news posts yet.</p>
   {% endfor %}
 </div>
 
 <div class="ad-space my-3 text-center border p-3">Ad Space 3 (160x600)</div>
 
 {% endblock %}
-
