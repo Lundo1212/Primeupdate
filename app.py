@@ -1,6 +1,8 @@
 import os
 from flask import Flask, render_template, request, redirect, url_for, send_from_directory
 from werkzeug.utils import secure_filename
+import uuid
+from datetime import datetime
 
 app = Flask(__name__)
 
@@ -14,18 +16,21 @@ posts = []
 breaking_news = []
 trending = []
 
-
 # -------------------- ROUTES --------------------
 
 @app.route('/')
 def index():
+    top_posts = posts[:3]  # Latest 3 posts for hero carousel
+    trending_posts = trending[:3]  # Latest 3 trending
+    other_posts = [p for p in posts if p not in trending_posts]
     return render_template(
         "index.html",
-        posts=posts,
+        posts=other_posts,
+        top_posts=top_posts,
+        trending_posts=trending_posts,
         breaking_news=breaking_news,
-        trending=trending
+        year=datetime.now().year
     )
-
 
 @app.route('/post/<int:post_id>')
 def view_post(post_id):
@@ -36,9 +41,8 @@ def view_post(post_id):
         'post.html',
         post=post,
         breaking_news=breaking_news,
-        trending=trending
+        year=datetime.now().year
     )
-
 
 @app.route('/admin', methods=['GET', 'POST'])
 def add_post():
@@ -51,7 +55,8 @@ def add_post():
         image_file = request.files.get('image')
         filename = None
         if image_file and image_file.filename != '':
-            filename = secure_filename(image_file.filename)
+            ext = os.path.splitext(image_file.filename)[1]
+            filename = f"{uuid.uuid4().hex}{ext}"
             image_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
             image_file.save(image_path)
 
@@ -64,13 +69,11 @@ def add_post():
             'image': filename
         }
 
-        posts.append(post)
+        posts.insert(0, post)  # Add newest post at the top
 
-        # If category is Breaking, add to breaking_news
+        # Categorize
         if category.lower() == "breaking":
             breaking_news.insert(0, post)
-
-        # If category is Trending, add to trending
         if category.lower() == "trending":
             trending.insert(0, post)
 
@@ -79,20 +82,17 @@ def add_post():
     return render_template(
         "admin.html",
         breaking_news=breaking_news,
-        trending=trending
+        trending=trending,
+        year=datetime.now().year
     )
-
 
 # Serve uploaded files
 @app.route('/uploads/<filename>')
 def uploaded_file(filename):
     return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
 
-
 # -------------------- MAIN --------------------
 
 if __name__ == '__main__':
     port = int(os.environ.get("PORT", 5000))
     app.run(host="0.0.0.0", port=port, debug=True)
-
- 

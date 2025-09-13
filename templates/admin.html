@@ -1,137 +1,72 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Admin Dashboard – PrimeUpdates KE</title>
-  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
-  <style>
-    body {
-      font-family: 'Segoe UI', sans-serif;
-      background-color: #f4f6f8;
-      margin: 0;
-    }
-    header {
-      background-color: #004080;
-      color: white;
-      padding: 20px;
-      text-align: center;
-      position: relative;
-    }
-    .logout {
-      position: absolute;
-      right: 20px;
-      top: 20px;
-      color: white;
-      text-decoration: none;
-    }
-    .admin-container {
-      width: 90%;
-      max-width: 900px;
-      margin: 30px auto;
-      background: white;
-      padding: 25px;
-      border-radius: 8px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
-    }
-    form input, form textarea, form select {
-      width: 100%;
-      margin: 10px 0;
-      padding: 10px;
-      border-radius: 5px;
-      border: 1px solid #ccc;
-      font-size: 1rem;
-    }
-    form button {
-      padding: 10px 20px;
-      background: #004080;
-      color: white;
-      border: none;
-      border-radius: 5px;
-      font-size: 1rem;
-    }
-    .post-list {
-      margin-top: 30px;
-    }
-    .post-item {
-      padding: 15px;
-      background: #f9f9f9;
-      margin-bottom: 10px;
-      border-radius: 6px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      flex-wrap: wrap;
-    }
-    .delete-btn {
-      background: #dc3545;
-      color: white;
-      border: none;
-      padding: 5px 10px;
-      border-radius: 4px;
-      cursor: pointer;
-      text-decoration: none;
-      font-size: 0.9rem;
-    }
-    @media (max-width: 600px) {
-      .post-item {
-        flex-direction: column;
-        align-items: flex-start;
-      }
-      .delete-btn {
-        margin-top: 10px;
-        align-self: flex-end;
-      }
-    }
-  </style>
-</head>
-<body>
+{% block content %}
 
-<header>
-  <h1>PrimeUpdates KE – Admin Panel</h1>
-  <a href="/logout" class="logout">Logout</a>
-</header>
-
-<div class="admin-container">
-  <h2>Welcome, {{ username }}</h2>
-  <form action="/post" method="POST" enctype="multipart/form-data">
-    <input type="text" name="title" placeholder="News Title" required>
-    <textarea name="content" rows="6" placeholder="News Content" required></textarea>
-    <input type="text" name="video_url" placeholder="Video URL (YouTube/MP4) – Optional">
-    <input type="file" name="image" accept="image/*" required>
-    <select name="category" required>
-      <option value="">Select Category</option>
-      <option>Politics</option>
-      <option>Business</option>
-      <option>Sports</option>
-      <option>Entertainment</option>
-      <option>Technology</option>
-      <option>Health</option>
-      <option>World</option>
-      <option>Opinion</option>
-      <option>Lifestyle</option>
-      <option>Breaking News</option>
-    </select>
-    <textarea name="adsense_code" rows="4" placeholder="Paste Google AdSense Code Here (Optional)"></textarea>
-    <button type="submit">Publish News</button>
-  </form>
-
-  <div class="post-list">
-    <h3>Previously Posted News</h3>
-    {% for post in posts %}
-      <div class="post-item">
-        <div>
-          <strong>{{ post['title'] }}</strong><br>
-          <small>{{ post['created_at'] }}</small><br>
-          <a href="{{ url_for('view_post', post_id=post['id']) }}" target="_blank">View Post</a>
-        </div>
-        <a href="/delete/{{ post['id'] }}" class="delete-btn">Delete</a>
+<!-- Hero Carousel -->
+<div id="heroCarousel" class="carousel slide mt-3" data-bs-ride="carousel">
+  <div class="carousel-inner">
+    {% for post in top_posts %}
+    <div class="carousel-item {% if loop.first %}active{% endif %}">
+      {% if post.image %}
+      <img src="{{ url_for('uploaded_file', filename=post.image) }}" class="d-block w-100" alt="{{ post.title }}">
+      {% endif %}
+      <div class="carousel-caption d-none d-md-block bg-dark bg-opacity-50 rounded p-2">
+        <h5>{{ post.title }}</h5>
+        <p>{{ post.content[:120] }}...</p>
+        <a href="/post/{{ post.id }}" class="btn btn-primary btn-sm">Read More</a>
       </div>
+    </div>
     {% endfor %}
   </div>
+  <button class="carousel-control-prev" type="button" data-bs-target="#heroCarousel" data-bs-slide="prev">
+    <span class="carousel-control-prev-icon"></span>
+  </button>
+  <button class="carousel-control-next" type="button" data-bs-target="#heroCarousel" data-bs-slide="next">
+    <span class="carousel-control-next-icon"></span>
+  </button>
 </div>
 
-</body>
-</html>
+<div class="ad-space my-3 text-center border p-3">Ad Space 1 (728x90)</div>
 
+<!-- Trending Stories -->
+<h3 class="mt-4 mb-3 text-dark fw-bold">TRENDING STORIES</h3>
+<div class="row">
+  {% for post in trending_posts %}
+  <div class="col-md-4 mb-3">
+    <div class="card">
+      {% if post.image %}
+      <img src="{{ url_for('uploaded_file', filename=post.image) }}" class="card-img-top" alt="{{ post.title }}">
+      {% endif %}
+      <div class="card-body">
+        <h5 class="card-title">{{ post.title }}</h5>
+        <p>{{ post.content[:120] }}...</p>
+        <a href="/post/{{ post.id }}" class="btn btn-outline-primary btn-sm">Read More</a>
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+
+<div class="ad-space my-3 text-center border p-3">Ad Space 2 (300x250)</div>
+
+<!-- Other Stories -->
+<h3 class="mt-4 mb-3 text-dark fw-bold" style="text-decoration: underline;">Other Stories</h3>
+<div>
+  {% for post in posts %}
+  <div class="card mb-3">
+    <div class="card-body">
+      <h4><a href="/post/{{ post.id }}">{{ post.title }}</a></h4>
+      {% if post.image %}
+      <img src="{{ url_for('uploaded_file', filename=post.image) }}" class="img-fluid mb-2" alt="{{ post.title }}">
+      {% endif %}
+      <p>{{ post.content[:250] }}...</p>
+      <a href="/post/{{ post.id }}" class="btn btn-outline-primary btn-sm">Continue Reading</a>
+    </div>
+  </div>
+  {% else %}
+  <p>No news posts yet.</p>
+  {% endfor %}
+</div>
+
+<div class="ad-space my-3 text-center border p-3">Ad Space 3 (160x600)</div>
+
+{% endblock %}
 
