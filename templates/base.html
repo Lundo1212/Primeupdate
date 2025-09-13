@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -17,6 +18,7 @@ header { background: linear-gradient(90deg, #1a1a1a, #004080); color: #fff; padd
 .headline-marquee { font-size: 1rem; font-weight: bold; color: #333; }
 footer { background: #212529; color: white; padding: 2rem 1rem; margin-top: 40px; text-align: center; }
 footer p.designer { font-style: italic; color: rgba(255,255,255,0.3); font-size: 0.9rem; }
+.adsense { margin: 20px 0; text-align:center; }
 </style>
 </head>
 <body>
@@ -28,10 +30,9 @@ footer p.designer { font-style: italic; color: rgba(255,255,255,0.3); font-size:
 </div>
 <div>
 {% if session.get('admin_logged_in') %}
-<a href="{{ url_for('add_post') }}" class="btn btn-sm btn-light">Admin Panel</a>
-<a href="{{ url_for('add_post') }}?logout=true" class="btn btn-sm btn-danger">Logout</a>
+<a href="{{ url_for('admin_logout') }}" class="btn btn-sm btn-light">Logout</a>
 {% else %}
-<a href="{{ url_for('add_post') }}" class="btn btn-sm btn-light">Admin</a>
+<a href="{{ url_for('admin_login') }}" class="btn btn-sm btn-light">Admin Login</a>
 {% endif %}
 </div>
 </header>
@@ -66,6 +67,21 @@ footer p.designer { font-style: italic; color: rgba(255,255,255,0.3); font-size:
 {% block content %}{% endblock %}
 </div>
 
+<!-- Google AdSense placeholder -->
+<div class="adsense">
+<!-- Replace with your AdSense code -->
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-XXXXXXXXXXXXXXXX"
+     data-ad-slot="1234567890"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+
 <footer>
 <p class="mb-2">Stay Informed. Stay Empowered. Stay Ahead with <strong>PrimeUpdates KE</strong>.</p>
 <div class="mb-2">
@@ -88,3 +104,4 @@ footer p.designer { font-style: italic; color: rgba(255,255,255,0.3); font-size:
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
+
