@@ -6,7 +6,7 @@
 <div id="heroCarousel" class="carousel slide mb-4" data-bs-ride="carousel">
   <div class="carousel-inner">
     {% for post in top_posts %}
-    <div class="carousel-item {% if loop.index == 1 %}active{% endif %}">
+    <div class="carousel-item {% if loop.first %}active{% endif %}">
       <img src="{{ url_for('uploaded_file', filename=post.image) }}" class="d-block w-100" alt="{{ post.title }}" style="max-height: 450px; object-fit: cover;">
       <div class="carousel-caption d-none d-md-block bg-dark bg-opacity-50 rounded">
         <h5>{{ post.title }}</h5>
@@ -24,11 +24,43 @@
   </button>
 </div>
 
-<!-- AdSpaces -->
+<!-- AdSense -->
 <div class="ad-space text-center mb-4">Ad Space (728x90)</div>
 
 <!-- Trending Stories -->
 <h3 class="fw-bold text-dark mb-3">TRENDING STORIES</h3>
 <div class="row">
   {% for post in trending_posts %}
- 
+  <div class="col-md-4">
+    <div class="card mb-3">
+      <img src="{{ url_for('uploaded_file', filename=post.image) }}" class="card-img-top" alt="{{ post.title }}">
+      <div class="card-body">
+        <h5 class="card-title">{{ post.title }}</h5>
+        <p class="card-text">{{ post.content[:100] }}...</p>
+        <a href="/post/{{ post.id }}" class="btn btn-outline-primary btn-sm">Read More</a>
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+
+<div class="ad-space text-center mb-4">Ad Space (300x250)</div>
+
+<!-- Other Stories -->
+<h4 class="fw-bold text-dark mb-3" style="text-decoration: underline;">Other Stories</h4>
+{% for post in posts %}
+<div class="card mb-3">
+  <div class="card-body">
+    <h5><a href="/post/{{ post.id }}">{{ post.title }}</a></h5>
+    {% if post.image %}
+    <img src="{{ url_for('uploaded_file', filename=post.image) }}" class="img-fluid mb-2" alt="{{ post.title }}">
+    {% endif %}
+    <p>{{ post.content[:200] }}...</p>
+    <a href="/post/{{ post.id }}" class="btn btn-outline-secondary btn-sm">Continue reading</a>
+  </div>
+</div>
+{% endfor %}
+
+<div class="ad-space text-center mt-4">Ad Space (160x600)</div>
+
+{% endblock %}
