@@ -1,74 +1,67 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div class="container mt-3">
-    <h3>Add New Post</h3>
-    <form method="POST" enctype="multipart/form-data">
-        <div class="mb-3">
-            <input type="text" class="form-control" name="title" placeholder="Title" required>
-        </div>
-        <div class="mb-3">
-            <textarea class="form-control" name="content" placeholder="Content" rows="4" required></textarea>
-        </div>
-        <div class="mb-3">
-            <select class="form-select" name="category">
-                <option value="General">General</option>
-                <option value="Breaking">Breaking</option>
-                <option value="Trending">Trending</option>
-            </select>
-        </div>
-        <div class="mb-3">
-            <input type="file" name="image" class="form-control">
-        </div>
-        <button type="submit" class="btn btn-success">Add Post</button>
-    </form>
+<h2 class="mb-4">Admin Dashboard</h2>
 
-    <hr class="my-4">
-    <h3>All Posts</h3>
-    <table class="table table-bordered">
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Title</th>
-                <th>Category</th>
-                <th>Image</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for post in posts %}
-            <tr>
-                <form method="POST" action="/admin/edit/{{ post.id }}" enctype="multipart/form-data">
-                <td>{{ post.id }}</td>
-                <td><input type="text" name="title" value="{{ post.title }}" class="form-control"></td>
-                <td>
-                    <select class="form-select" name="category">
-                        <option value="General" {% if post.category=="General" %}selected{% endif %}>General</option>
-                        <option value="Breaking" {% if post.category=="Breaking" %}selected{% endif %}>Breaking</option>
-                        <option value="Trending" {% if post.category=="Trending" %}selected{% endif %}>Trending</option>
-                    </select>
-                </td>
-                <td>
-                    {% if post.image %}
-                    <img src="{{ url_for('uploaded_file', filename=post.image) }}" style="height:50px;">
-                    {% endif %}
-                    <input type="file" name="image" class="form-control mt-1">
-                </td>
-                <td>
-                    <button type="submit" class="btn btn-primary btn-sm mb-1">Update</button>
-                    <a href="/admin/delete/{{ post.id }}" class="btn btn-danger btn-sm mb-1">Delete</a>
-                </td>
-                </form>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+<!-- Add New Post -->
+<h4>Add News Post</h4>
+<form method="POST" enctype="multipart/form-data">
+  <div class="mb-2">
+    <input type="text" name="title" class="form-control" placeholder="Title" required>
+  </div>
+  <div class="mb-2">
+    <textarea name="content" class="form-control" placeholder="Content" rows="4" required></textarea>
+  </div>
+  <div class="mb-2">
+    <input type="text" name="category" class="form-control" placeholder="Category (Breaking/Trending/etc)" required>
+  </div>
+  <div class="mb-2">
+    <input type="file" name="image" class="form-control">
+  </div>
+  <button type="submit" class="btn btn-primary">Add Post</button>
+</form>
 
-    <hr class="my-4">
-    <h3>Update Google AdSense</h3>
-    <form method="POST" action="/admin/update_adsense">
-        <textarea class="form-control" name="adsense_code" rows="3">{{ adsense_code }}</textarea>
-        <button type="submit" class="btn btn-warning mt-2">Update AdSense</button>
-    </form>
-</div>
+<hr>
+
+<!-- Existing Posts -->
+<h4 class="mt-4">All Posts</h4>
+<table class="table table-bordered">
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>Title</th>
+      <th>Category</th>
+      <th>Image</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for post in posts %}
+    <tr>
+      <td>{{ post.id }}</td>
+      <td>{{ post.title }}</td>
+      <td>{{ post.category }}</td>
+      <td>
+        {% if post.image %}
+        <img src="{{ url_for('uploaded_file', filename=post.image) }}" width="80">
+        {% endif %}
+      </td>
+      <td>
+        <!-- Edit form -->
+        <form method="POST" action="/admin/edit/{{ post.id }}" enctype="multipart/form-data" style="display:inline-block;">
+          <input type="text" name="title" value="{{ post.title }}" required>
+          <input type="text" name="category" value="{{ post.category }}" required>
+          <input type="file" name="image">
+          <input type="hidden" name="content" value="{{ post.content }}">
+          <button type="submit" class="btn btn-sm btn-warning">Edit</button>
+        </form>
+        <a href="/admin/delete/{{ post.id }}" class="btn btn-sm btn-danger">Delete</a>
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+<a href="/logout" class="btn btn-secondary mt-3">Logout</a>
 {% endblock %}
+

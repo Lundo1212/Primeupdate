@@ -1,19 +1,19 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div class="container mt-5" style="max-width: 400px;">
-    <h3 class="mb-3">Admin Login</h3>
-    <form method="POST" action="/admin/login">
-        <div class="mb-3">
-            <input type="text" class="form-control" name="username" placeholder="Username" required>
-        </div>
-        <div class="mb-3">
-            <input type="password" class="form-control" name="password" placeholder="Password" required>
-        </div>
-        {% if error %}
-        <div class="alert alert-danger">{{ error }}</div>
-        {% endif %}
-        <button type="submit" class="btn btn-primary w-100">Login</button>
-    </form>
-</div>
+<h2 class="mb-4">Admin Login</h2>
+
+{% if error %}
+<div class="alert alert-danger">{{ error }}</div>
+{% endif %}
+
+<form method="POST">
+  <div class="mb-2">
+    <input type="text" name="username" class="form-control" placeholder="Username" required>
+  </div>
+  <div class="mb-2">
+    <input type="password" name="password" class="form-control" placeholder="Password" required>
+  </div>
+  <button type="submit" class="btn btn-primary">Login</button>
+</form>
 {% endblock %}
