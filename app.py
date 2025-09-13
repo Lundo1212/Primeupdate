@@ -67,8 +67,11 @@ def add_post():
     trending = sorted(posts, key=lambda x: x['views'], reverse=True)[:3]
     return render_template("add_post.html", breaking_news=breaking_news, trending=trending)
 
-if __name__ == '__main__':
-    app.run(debug=True)
+if __name__ == "__main__":
+    import os
+    port = int(os.environ.get("PORT", 5000))  # Render provides PORT env variable
+    app.run(host="0.0.0.0", port=port, debug=True)
+
 
 
 
