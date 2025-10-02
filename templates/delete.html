@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2 class="mt-3 text-danger">Delete Post</h2>
+
+<div class="alert alert-warning">
+  <strong>Are you sure?</strong> You are about to delete the post:
+  <br><br>
+  <strong>Title:</strong> {{ post.title }} <br>
+  <strong>Category:</strong> {{ post.category }} <br>
+  <strong>Date:</strong> {{ post.created_at.strftime("%B %d, %Y") if post.created_at else "" }}
+</div>
+
+<form method="POST">
+  <button type="submit" class="btn btn-danger">Yes, Delete</button>
+  <a href="{{ url_for('admin') }}" class="btn btn-secondary">Cancel</a>
+</form>
+{% endblock %}

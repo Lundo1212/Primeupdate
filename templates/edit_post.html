@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2 class="mt-3">Edit Post</h2>
+
+<form method="POST" enctype="multipart/form-data">
+  <div class="mb-2">
+    <label>Title</label>
+    <input type="text" name="title" class="form-control" value="{{ post.title }}" required>
+  </div>
+
+  <div class="mb-2">
+    <label>Content</label>
+    <textarea name="content" class="form-control" required>{{ post.content }}</textarea>
+  </div>
+
+  <div class="mb-2">
+    <label>Category</label>
+    <select name="category" class="form-control" required>
+      <option value="Breaking" {% if post.category == 'Breaking' %}selected{% endif %}>Breaking</option>
+      <option value="Trending" {% if post.category == 'Trending' %}selected{% endif %}>Trending</option>
+      <option value="Politics" {% if post.category == 'Politics' %}selected{% endif %}>Politics</option>
+      <option value="Business" {% if post.category == 'Business' %}selected{% endif %}>Business</option>
+      <option value="Sports" {% if post.category == 'Sports' %}selected{% endif %}>Sports</option>
+      <option value="Entertainment" {% if post.category == 'Entertainment' %}selected{% endif %}>Entertainment</option>
+      <option value="Technology" {% if post.category == 'Technology' %}selected{% endif %}>Technology</option>
+      <option value="Health" {% if post.category == 'Health' %}selected{% endif %}>Health</option>
+      <option value="World" {% if post.category == 'World' %}selected{% endif %}>World</option>
+      <option value="Lifestyle" {% if post.category == 'Lifestyle' %}selected{% endif %}>Lifestyle</option>
+      <option value="Opinion" {% if post.category == 'Opinion' %}selected{% endif %}>Opinion</option>
+    </select>
+  </div>
+
+  <div class="mb-2">
+    <label>Replace Image (optional)</label>
+    <input type="file" name="image" class="form-control">
+    {% if post.image %}
+      <p>Current Image: <img src="{{ url_for('uploaded_file', filename=post.image) }}" width="120"></p>
+    {% endif %}
+  </div>
+
+  <div class="mb-2">
+    <label>AdSense Code (optional)</label>
+    <textarea name="adsense_code" class="form-control">{{ post.adsense_code }}</textarea>
+  </div>
+
+  <button type="submit" class="btn btn-success">Update Post</button>
+  <a href="{{ url_for('admin') }}" class="btn btn-secondary">Cancel</a>
+</form>
+{% endblock %}
