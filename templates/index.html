@@ -11,7 +11,7 @@
       <div class="carousel-caption d-none d-md-block bg-dark bg-opacity-50 rounded">
         <h5>{{ post.title }}</h5>
         <p>{{ post.content[:120] }}...</p>
-        <a href="/post/{{ post.id }}" class="btn btn-primary btn-sm">Read More</a>
+        <a href="{{ url_for('view_post', post_id=post.id) }}" class="btn btn-primary btn-sm">Read More</a>
       </div>
     </div>
     {% endfor %}
@@ -24,7 +24,7 @@
   </button>
 </div>
 
-<!-- Trending Stories -->
+<!-- Latest Posts -->
 <h3 class="fw-bold text-dark mb-3" style="text-decoration: underline;">LATEST NEWS</h3>
 <div class="row">
   {% for post in latest_posts %}
@@ -34,42 +34,24 @@
       <div class="card-body">
         <h5 class="card-title">{{ post.title }}</h5>
         <p class="card-text">{{ post.content[:100] }}...</p>
-        <a href="/post/{{ post.id }}" class="btn btn-outline-primary btn-sm">Read More</a>
+        <a href="{{ url_for('view_post', post_id=post.id) }}" class="btn btn-outline-primary btn-sm">Read More</a>
       </div>
     </div>
   </div>
   {% endfor %}
 </div>
 
-<!-- TRENDING NEWS -->
+<!-- Trending News -->
 <h4 class="fw-bold text-dark mb-3" style="text-decoration: underline;">TRENDING NEWS</h4>
-{% for post in posts %}
+{% for post in trending_posts %}
 <div class="card mb-3">
   <div class="card-body">
-    <h5><a href="/post/{{ post.id }}">{{ post.title }}</a></h5>
+    <h5><a href="{{ url_for('view_post', post_id=post.id) }}">{{ post.title }}</a></h5>
     <img src="{{ url_for('uploaded_file', filename=post.image) }}" class="img-fluid mb-2" alt="{{ post.title }}">
-    <p>{{ post.content[:2000] }}...</p>
-    <a href="/post/{{ post.id }}" class="btn btn-outline-secondary btn-sm">Continue reading</a>
+    <p>{{ post.content[:300] }}...</p>
+    <a href="{{ url_for('view_post', post_id=post.id) }}" class="btn btn-outline-secondary btn-sm">Continue reading</a>
   </div>
 </div>
 {% endfor %}
-
-<!-- Subscription Form -->
-<div class="card my-5 p-3 bg-light">
-  <h5 class="mb-3">Subscribe for Updates</h5>
-  <form method="POST" action="{{ url_for('subscribe') }}">
-    <div class="row g-2">
-      <div class="col-md-8">
-        <input type="email" name="email" class="form-control" placeholder="Enter your email" required>
-      </div>
-      <div class="col-md-4">
-        <button type="submit" class="btn btn-success w-100">Subscribe</button>
-      </div>
-    </div>
-  </form>
-  {% if message %}
-  <p class="mt-2 text-success">{{ message }}</p>
-  {% endif %}
-</div>
 
 {% endblock %}

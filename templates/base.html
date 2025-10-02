@@ -32,25 +32,23 @@
       font-weight: bold;
       text-decoration: none;
     }
-    /* Breaking news animation */
     .breaking-container {
       background: #000;
       color: rgb(10, 212, 44);
       padding: 5px 0;
-      overflow: auto;
+      overflow: hidden;
       position: relative;
     }
     .breaking-title {
-      font-size: 1.3rem;
-      font-style: italic;
-      font-weight: bold;
       display: inline-block;
       white-space: nowrap;
-      animation: scroll-left 10s linear infinite;
+      animation: scroll-left 12s linear infinite;
+      font-weight: bold;
+      font-size: 1.2rem;
     }
-    .breaking-title span:nth-child(3n+1) { color: #3fee13; } 
-    .breaking-title span:nth-child(3n+2) { color: #16ec16; } 
-    .breaking-title span:nth-child(3n+3) { color: #28f116; } 
+    .breaking-title span {
+      margin-right: 50px;
+    }
     @keyframes scroll-left {
       0% { transform: translateX(100%); }
       100% { transform: translateX(-100%); }
@@ -77,43 +75,40 @@
     <span class="logo-text">Prime Updates KE</span>
   </div>
   <div>
-    <a href="/admin" class="btn btn-sm btn-light">Admin</a>
+    {% if session.get('admin_logged_in') %}
+      <a href="{{ url_for('admin_logout') }}" class="btn btn-sm btn-light">Logout</a>
+      <a href="{{ url_for('admin_dashboard') }}" class="btn btn-sm btn-light">Dashboard</a>
+    {% else %}
+      <a href="{{ url_for('admin_login') }}" class="btn btn-sm btn-light">Admin</a>
+    {% endif %}
   </div>
 </header>
 
 <div class="category-bar">
-  <a href="/">Home</a>
-  <a href="/category/Politics">Politics</a>
-  <a href="/category/Business">Business</a>
-  <a href="/category/Sports">Sports</a>
-  <a href="/category/Entertainment">Entertainment</a>
-  <a href="/category/Technology">Technology</a>
-  <a href="/category/Health">Health</a>
-  <a href="/category/World">World</a>
-  <a href="/category/Lifestyle">Lifestyle</a>
-  <a href="/category/Opinion">Opinion</a>
+  <a href="{{ url_for('index') }}">Home</a>
+  <a href="{{ url_for('category_page', category_name='Politics') }}">Politics</a>
+  <a href="{{ url_for('category_page', category_name='Business') }}">Business</a>
+  <a href="{{ url_for('category_page', category_name='Sports') }}">Sports</a>
+  <a href="{{ url_for('category_page', category_name='Entertainment') }}">Entertainment</a>
+  <a href="{{ url_for('category_page', category_name='Technology') }}">Technology</a>
+  <a href="{{ url_for('category_page', category_name='Health') }}">Health</a>
+  <a href="{{ url_for('category_page', category_name='World') }}">World</a>
+  <a href="{{ url_for('category_page', category_name='Lifestyle') }}">Lifestyle</a>
+  <a href="{{ url_for('category_page', category_name='Opinion') }}">Opinion</a>
 </div>
 
-<!-- Scrolling latest headlines -->
-<marquee class="headline-marquee" direction="right" scrollamount="5" onmouseover="this.stop();" onmouseout="this.start();">
-  {% for headline in breaking_news[:3] %}
-    {{ headline.title }} &nbsp;&nbsp;|&nbsp;&nbsp;
-  {% endfor %}
-</marquee>
+<!-- BREAKING NEWS TITLE -->
+<div class="breaking-container">
+  <strong style="margin-left:10px;">Breaking News:</strong>
+  <div class="breaking-title">
+    {% for news in breaking_news %}
+      <span>{{ news.title }}</span>
+    {% endfor %}
+  </div>
+</div>
 
 <div class="container mt-3">
   {% block content %}{% endblock %}
-</div>
-
-<!-- Newsletter Subscription (before footer) -->
-<div class="container my-5">
-  <h5>Subscribe for Updates</h5>
-  <form method="POST" action="{{ url_for('subscribe') }}">
-    <div class="input-group mb-3">
-      <input type="email" name="email" class="form-control" placeholder="Enter your email" required>
-      <button class="btn btn-primary" type="submit">Subscribe</button>
-    </div>
-  </form>
 </div>
 
 <footer>
