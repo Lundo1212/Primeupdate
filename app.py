@@ -219,7 +219,7 @@ def delete_post(post_id):
 
 # -------------------- LOGOUT --------------------
 @app.route('/logout')
-def logout():
+def admin_logout():
     session.pop("admin_logged_in", None)
     return redirect(url_for("admin_login"))
 
