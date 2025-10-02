@@ -1,49 +1,44 @@
-# --- Database Initialization Code (e.g., embedded in app.py or reusable function) ---
 import sqlite3
 
-def initialize_db():
-    conn = sqlite3.connect('news.db')
-    c = conn.cursor()
+# Connect to the database (or create it if it doesn't exist)
+conn = sqlite3.connect("primeupdate.db")
+c = conn.cursor()
 
-    # Create posts table
-    c.execute('''
-        CREATE TABLE IF NOT EXISTS posts (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            title TEXT NOT NULL,
-            content TEXT NOT NULL,
-            image TEXT,
-            category TEXT,
-            video_url TEXT,
-            created_at TEXT NOT NULL
-        )
-    ''')
+# --- POSTS TABLE ---
+c.execute('''
+CREATE TABLE IF NOT EXISTS posts (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    title TEXT NOT NULL,
+    content TEXT NOT NULL,
+    category TEXT,
+    image_filename TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+)
+''')
 
-    # Create admins table
-    c.execute('''
-        CREATE TABLE IF NOT EXISTS admins (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            username TEXT NOT NULL,
-            password TEXT NOT NULL
-        )
-    ''')
+# --- SUBSCRIBERS TABLE ---
+c.execute('''
+CREATE TABLE IF NOT EXISTS subscribers (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    email TEXT UNIQUE NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+)
+''')
 
-    # Create subscribers table
-    c.execute('''
-        CREATE TABLE IF NOT EXISTS subscribers (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            email TEXT NOT NULL
-        )
-    ''')
+# --- COMMENTS TABLE ---
+c.execute('''
+CREATE TABLE IF NOT EXISTS comments (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    post_id INTEGER NOT NULL,
+    name TEXT NOT NULL,
+    comment TEXT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (post_id) REFERENCES posts (id) ON DELETE CASCADE
+)
+''')
 
-    # Insert default admin if it doesn't exist
-    c.execute("SELECT COUNT(*) FROM admins WHERE username='admin'")
-    if c.fetchone()[0] == 0:
-        c.execute("INSERT INTO admins (username, password) VALUES (?, ?)", ('admin', 'admin123'))
+# Save changes and close
+conn.commit()
+conn.close()
 
-    conn.commit()
-    conn.close()
-
-# Example call
-if __name__ == '__main__':
-    initialize_db()
-    print("Database initialized successfully.")
+print("✅ Database initialized with posts, subscribers, and comments tables.")

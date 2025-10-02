@@ -24,9 +24,8 @@
   </button>
 </div>
 
-
 <!-- Trending Stories -->
-<h3 class="fw-bold text-dark mb-3:underline">LATEST NEWS</h3>
+<h3 class="fw-bold text-dark mb-3" style="text-decoration: underline;">LATEST NEWS</h3>
 <div class="row">
   {% for post in latest_posts %}
   <div class="col-md-4">
@@ -42,7 +41,6 @@
   {% endfor %}
 </div>
 
-
 <!-- TRENDING NEWS -->
 <h4 class="fw-bold text-dark mb-3" style="text-decoration: underline;">TRENDING NEWS</h4>
 {% for post in posts %}
@@ -56,5 +54,22 @@
 </div>
 {% endfor %}
 
-{% endblock %}
+<!-- Subscription Form -->
+<div class="card my-5 p-3 bg-light">
+  <h5 class="mb-3">Subscribe for Updates</h5>
+  <form method="POST" action="{{ url_for('subscribe') }}">
+    <div class="row g-2">
+      <div class="col-md-8">
+        <input type="email" name="email" class="form-control" placeholder="Enter your email" required>
+      </div>
+      <div class="col-md-4">
+        <button type="submit" class="btn btn-success w-100">Subscribe</button>
+      </div>
+    </div>
+  </form>
+  {% if message %}
+  <p class="mt-2 text-success">{{ message }}</p>
+  {% endif %}
+</div>
 
+{% endblock %}
