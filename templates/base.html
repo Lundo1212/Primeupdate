@@ -110,6 +110,19 @@
   {% block content %}{% endblock %}
 </div>
 
+<!-- ================= Subscribe Section ================= -->
+<section class="subscribe bg-dark text-white py-4">
+  <div class="container text-center">
+    <h4>Subscribe to PrimeUpdate</h4>
+    <p>Stay updated with the latest breaking and trending news</p>
+    <form action="{{ url_for('subscribe') }}" method="POST" class="form-inline d-flex justify-content-center">
+      <input type="email" name="email" class="form-control w-50 mr-2" placeholder="Enter your email" required>
+      <button type="submit" class="btn btn-warning">Subscribe</button>
+    </form>
+  </div>
+</section>
+
+
 <footer>
   <p class="mb-2">Stay Informed. Stay Empowered. Stay Ahead with <strong>PrimeUpdates KE</strong>.</p>
   <div class="mb-2">

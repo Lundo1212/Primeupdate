@@ -135,7 +135,7 @@ def admin_login():
         password = request.form.get("password")
         if username == "admin" and password == "password":
             session['admin_logged_in'] = True
-            return redirect(url_for("dashboard"))
+            return redirect(url_for("admin_dashboard"))
         else:
             return render_template("login.html", error="Invalid credentials")
     return render_template("login.html")
