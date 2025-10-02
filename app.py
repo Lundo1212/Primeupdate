@@ -142,7 +142,7 @@ def admin_login():
 
 # -------------------- ADMIN DASHBOARD --------------------
 @app.route('/dashboard', methods=['GET', 'POST'])
-def dashboard():
+def admin_dashboard():
     if not session.get("admin_logged_in"):
         return redirect(url_for("admin_login"))
 
