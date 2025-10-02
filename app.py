@@ -164,7 +164,7 @@ def admin_dashboard():
         cursor.execute("INSERT INTO posts (title, content, category, image) VALUES (?, ?, ?, ?)",
                        (title, content, category, filename))
         db.commit()
-        return redirect(url_for("dashboard"))
+        return redirect(url_for("admin_dashboard"))
 
     cursor.execute("SELECT * FROM posts ORDER BY id DESC")
     posts = cursor.fetchall()
@@ -200,7 +200,7 @@ def edit_post(post_id):
         cursor.execute("UPDATE posts SET title=?, content=?, category=? WHERE id=?",
                        (title, content, category, post_id))
         db.commit()
-        return redirect(url_for("dashboard"))
+        return redirect(url_for("admin_dashboard"))
 
     return render_template("edit_post.html", post=post)
 
@@ -215,7 +215,7 @@ def delete_post(post_id):
     cursor.execute("DELETE FROM posts WHERE id=?", (post_id,))
     cursor.execute("DELETE FROM comments WHERE post_id=?", (post_id,))
     db.commit()
-    return redirect(url_for("dashboard"))
+    return redirect(url_for("admin_dashboard"))
 
 # -------------------- LOGOUT --------------------
 @app.route('/logout')
