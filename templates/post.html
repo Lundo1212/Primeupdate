@@ -34,7 +34,8 @@
     {% endfor %}
 
     <!-- Add new comment -->
-    <form method="POST" action="{{ url_for('add_comment', post_id=post.id) }}">
+    <form method="POST" action="{{ url_for('view_post', post_id=post.id) }}">
+
       <div class="mb-2">
         <input type="text" name="name" class="form-control" placeholder="Your Name" required>
       </div>
