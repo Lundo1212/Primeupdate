@@ -1,30 +1,101 @@
 {% extends 'base.html' %}
-
 {% block content %}
 
-<div class="container my-4">
-  <h2 class="fw-bold text-dark mb-3">Category: {{ category_name }}</h2>
+<!-- Breaking News Header Bar -->
+<div class="bg-danger text-white fw-bold px-3 py-2 mb-0">
+  BREAKING NEWS
+</div>
 
-  {% if posts %}
-    <div class="row">
-      {% for post in posts %}
-      <div class="col-md-4">
-        <div class="card mb-3">
-          {% if post.image %}
-          <img src="{{ url_for('uploaded_file', filename=post.image) }}" class="card-img-top" alt="{{ post.title }}" style="height:180px;object-fit:cover;">
-          {% endif %}
-          <div class="card-body">
-            <h5 class="card-title">{{ post.title }}</h5>
-            <p class="card-text">{{ post.content[:120] }}...</p>
-            <a href="{{ url_for('view_post', post_id=post.id) }}" class="btn btn-outline-primary btn-sm">Read More</a>
-          </div>
+<!-- Breaking News Titles Marquee -->
+<div class="bg-light border-bottom py-2 mb-3">
+  <marquee behavior="scroll" direction="left" scrollamount="5">
+    {% for post in breaking_news %}
+      <a href="{{ url_for('view_post', post_id=post.id) }}" class="me-4 text-dark fw-semibold">
+        {{ post.title }}
+      </a>
+    {% endfor %}
+  </marquee>
+</div>
+
+<!-- Hero Slideshow -->
+<div id="heroCarousel" class="carousel slide mb-4" data-bs-ride="carousel">
+  <div class="carousel-inner">
+    {% for post in posts[:3] %}
+    <div class="carousel-item {% if loop.index == 1 %}active{% endif %}">
+      {% if post.image %}
+      <img src="{{ url_for('uploaded_file', filename=post.image) }}" class="d-block w-100" alt="{{ post.title }}" style="max-height:450px;object-fit:cover;">
+      {% endif %}
+      <div class="carousel-caption d-none d-md-block bg-dark bg-opacity-50 rounded">
+        <h5>{{ post.title }}</h5>
+        <p>{{ post.content[:120] }}...</p>
+        <a href="{{ url_for('view_post', post_id=post.id) }}" class="btn btn-primary btn-sm">Read More</a>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  <button class="carousel-control-prev" type="button" data-bs-target="#heroCarousel" data-bs-slide="prev">
+    <span class="carousel-control-prev-icon"></span>
+  </button>
+  <button class="carousel-control-next" type="button" data-bs-target="#heroCarousel" data-bs-slide="next">
+    <span class="carousel-control-next-icon"></span>
+  </button>
+</div>
+
+<!-- Latest news -->
+<h3 class="fw-bold text-dark mb-3" style="text-decoration: underline;">LATEST NEWS</h3>
+<div class="row">
+  {% for post in posts %}
+  <div class="col-md-4">
+    <div class="card mb-3">
+      {% if post.image %}
+      <img src="{{ url_for('uploaded_file', filename=post.image) }}" class="card-img-top" alt="{{ post.title }}" style="height:180px;object-fit:cover;">
+      {% endif %}
+      <div class="card-body">
+        <h5 class="card-title">{{ post.title }}</h5>
+        <p class="card-text">{{ post.content[:120] }}...</p>
+        <a href="{{ url_for('view_post', post_id=post.id) }}" class="btn btn-outline-primary btn-sm">Read More</a>
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+
+<!-- Trending News -->
+<h4 class="fw-bold text-dark mb-3" style="text-decoration: underline;">TRENDING NEWS</h4>
+{% for post in trending_posts %}
+<div class="card mb-3">
+  <div class="row g-0">
+    <div class="col-md-4">
+      {% if post.image %}
+      <img src="{{ url_for('uploaded_file', filename=post.image) }}" class="img-fluid h-100" style="object-fit:cover;">
+      {% endif %}
+    </div>
+    <div class="col-md-8">
+      <div class="card-body">
+        <h5 class="card-title"><a href="{{ url_for('view_post', post_id=post.id) }}">{{ post.title }}</a></h5>
+        <p class="card-text">{{ post.content[:250] }}...</p>
+        <p class="text-muted">Category: {{ post.category }}</p>
+        <a href="{{ url_for('view_post', post_id=post.id) }}" class="btn btn-outline-secondary btn-sm">Continue reading</a>
+      </div>
+    </div>
+  </div>
+</div>
+{% endfor %}
+
+<!-- Subscription -->
+<div class="bg-light py-5">
+  <div class="container text-center">
+    <h4 class="fw-bold mb-3">Subscribe to Prime Updates</h4>
+    <p class="mb-4">Get the latest news straight to your inbox.</p>
+    <form method="post" action="{{ url_for('subscribe') }}" class="row justify-content-center">
+      <div class="col-md-6">
+        <div class="input-group">
+          <input type="email" name="email" class="form-control" placeholder="Enter your email" required>
+          <button class="btn btn-primary" type="submit">Subscribe</button>
         </div>
       </div>
-      {% endfor %}
-    </div>
-  {% else %}
-    <p>No posts found in this category.</p>
-  {% endif %}
+    </form>
+  </div>
 </div>
 
 {% endblock %}
