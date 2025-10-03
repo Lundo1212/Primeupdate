@@ -1,44 +1,17 @@
 {% extends 'base.html' %}
-
 {% block content %}
 
-<!-- =================== -->
-<!-- Categories Section -->
-<!-- =================== -->
-<div class="container my-3">
-  <div class="d-flex justify-content-between align-items-center border-bottom pb-2">
-    <h5 class="fw-bold text-dark">CATEGORIES</h5>
-    <!-- Example categories, you can make these dynamic later -->
-    <div>
-      <a href="#" class="btn btn-sm btn-outline-primary me-2">Politics</a>
-      <a href="#" class="btn btn-sm btn-outline-primary me-2">Business</a>
-      <a href="#" class="btn btn-sm btn-outline-primary me-2">Sports</a>
-      <a href="#" class="btn btn-sm btn-outline-primary">Technology</a>
-    </div>
-  </div>
-</div>
-
-<!-- =================== -->
-<!-- Breaking News Bar -->
-<!-- =================== -->
-<div class="bg-danger text-white py-2 px-3 mb-3">
-  <strong>BREAKING NEWS</strong>
-</div>
-
-<!-- =================== -->
-<!-- Breaking News Titles -->
-<!-- =================== -->
-<div class="container mb-4">
+<!-- 1) Breaking news titles (three) - already above as marquee, but also list them nicely here -->
+<div class="container mb-3">
   <div class="row">
     {% for post in breaking_news %}
     <div class="col-md-4">
-      <div class="card border-0">
+      <div class="card mb-2">
+        {% if post.image %}
+        <img src="{{ url_for('uploaded_file', filename=post.image) }}" class="card-img-top" alt="{{ post.title }}" style="height:180px;object-fit:cover;">
+        {% endif %}
         <div class="card-body">
-          <h6 class="fw-bold">
-            <a href="{{ url_for('view_post', post_id=post.id) }}" class="text-dark text-decoration-none">
-              {{ post.title }}
-            </a>
-          </h6>
+          <h6 class="card-title"><a href="{{ url_for('view_post', post_id=post.id) }}" class="text-dark">{{ post.title }}</a></h6>
         </div>
       </div>
     </div>
@@ -46,17 +19,14 @@
   </div>
 </div>
 
-<!-- =================== -->
-<!-- Hero Slideshow -->
-<!-- =================== -->
+<!-- 2) Hero slideshow (top 3) -->
 <div id="heroCarousel" class="carousel slide mb-4" data-bs-ride="carousel">
   <div class="carousel-inner">
     {% for post in top_posts %}
     <div class="carousel-item {% if loop.index == 1 %}active{% endif %}">
-      <img src="{{ url_for('uploaded_file', filename=post.image) }}" 
-           class="d-block w-100" 
-           alt="{{ post.title }}" 
-           style="max-height: 450px; object-fit: cover;">
+      {% if post.image %}
+      <img src="{{ url_for('uploaded_file', filename=post.image) }}" class="d-block w-100" alt="{{ post.title }}" style="max-height:450px;object-fit:cover;">
+      {% endif %}
       <div class="carousel-caption d-none d-md-block bg-dark bg-opacity-50 rounded">
         <h5>{{ post.title }}</h5>
         <p>{{ post.content[:120] }}...</p>
@@ -73,21 +43,19 @@
   </button>
 </div>
 
-<!-- =================== -->
-<!-- Latest News -->
-<!-- =================== -->
-<div class="container mb-4">
-  <div class="border-bottom pb-2 mb-3">
-    <h3 class="fw-bold text-dark">LATEST NEWS</h3>
-  </div>
+<!-- 3) Latest news bar -->
+<div class="container mb-3">
+  <h3 class="fw-bold text-dark mb-3" style="text-decoration: underline;">LATEST NEWS</h3>
   <div class="row">
     {% for post in latest_posts %}
     <div class="col-md-4">
       <div class="card mb-3">
-        <img src="{{ url_for('uploaded_file', filename=post.image) }}" class="card-img-top" alt="{{ post.title }}">
+        {% if post.image %}
+        <img src="{{ url_for('uploaded_file', filename=post.image) }}" class="card-img-top" alt="{{ post.title }}" style="height:180px;object-fit:cover;">
+        {% endif %}
         <div class="card-body">
           <h5 class="card-title">{{ post.title }}</h5>
-          <p class="card-text">{{ post.content[:100] }}...</p>
+          <p class="card-text">{{ post.content[:120] }}...</p>
           <a href="{{ url_for('view_post', post_id=post.id) }}" class="btn btn-outline-primary btn-sm">Read More</a>
         </div>
       </div>
@@ -96,23 +64,22 @@
   </div>
 </div>
 
-<!-- =================== -->
-<!-- Trending News -->
-<!-- =================== -->
+<!-- 4) Trending (all posts) -->
 <div class="container mb-4">
-  <div class="border-bottom pb-2 mb-3">
-    <h3 class="fw-bold text-dark">TRENDING NEWS</h3>
-  </div>
+  <h4 class="fw-bold text-dark mb-3" style="text-decoration: underline;">TRENDING NEWS</h4>
   {% for post in trending_posts %}
-  <div class="card mb-3 shadow-sm">
+  <div class="card mb-3">
     <div class="row g-0">
       <div class="col-md-4">
-        <img src="{{ url_for('uploaded_file', filename=post.image) }}" class="img-fluid h-100 w-100" alt="{{ post.title }}" style="object-fit: cover;">
+        {% if post.image %}
+        <img src="{{ url_for('uploaded_file', filename=post.image) }}" class="img-fluid h-100" style="object-fit:cover;">
+        {% endif %}
       </div>
       <div class="col-md-8">
         <div class="card-body">
-          <h5 class="card-title">{{ post.title }}</h5>
-          <p class="card-text">{{ post.content[:200] }}...</p>
+          <h5 class="card-title"><a href="{{ url_for('view_post', post_id=post.id) }}">{{ post.title }}</a></h5>
+          <p class="card-text">{{ post.content[:250] }}...</p>
+          <p class="text-muted">Category: {{ post.category }}</p>
           <a href="{{ url_for('view_post', post_id=post.id) }}" class="btn btn-outline-secondary btn-sm">Continue reading</a>
         </div>
       </div>
@@ -121,13 +88,11 @@
   {% endfor %}
 </div>
 
-<!-- =================== -->
-<!-- Subscription Section -->
-<!-- =================== -->
+<!-- 5) Subscription section -->
 <div class="bg-light py-5">
   <div class="container text-center">
-    <h4 class="fw-bold mb-3">Subscribe to PrimeUpdate</h4>
-    <p class="mb-4">Get the latest news delivered straight to your inbox.</p>
+    <h4 class="fw-bold mb-3">Subscribe to Prime Updates</h4>
+    <p class="mb-4">Get the latest news straight to your inbox.</p>
     <form method="post" action="{{ url_for('subscribe') }}" class="row justify-content-center">
       <div class="col-md-6">
         <div class="input-group">
@@ -138,15 +103,5 @@
     </form>
   </div>
 </div>
-
-<!-- =================== -->
-<!-- Footer -->
-<!-- =================== -->
-<footer class="bg-dark text-light py-4 mt-5">
-  <div class="container text-center">
-    <p class="mb-1">&copy; 2025 PrimeUpdate. All rights reserved.</p>
-    <small>Powered by Flask | Designed with ❤</small>
-  </div>
-</footer>
 
 {% endblock %}
