@@ -1,21 +1,22 @@
-{% extends "base.html" %}
+{% extends 'base.html' %}
 
 {% block content %}
-<div class="container mt-4">
-  <h2 class="mb-4">{{ category_name | title }} News</h2>
+
+<div class="container my-4">
+  <h2 class="fw-bold text-dark mb-3">Category: {{ category_name }}</h2>
 
   {% if posts %}
     <div class="row">
       {% for post in posts %}
-      <div class="col-md-6 mb-4">
-        <div class="card h-100">
+      <div class="col-md-4">
+        <div class="card mb-3">
+          {% if post.image %}
+          <img src="{{ url_for('uploaded_file', filename=post.image) }}" class="card-img-top" alt="{{ post.title }}" style="height:180px;object-fit:cover;">
+          {% endif %}
           <div class="card-body">
             <h5 class="card-title">{{ post.title }}</h5>
-            <p class="card-text">{{ post.content[:200] }}...</p>
-            <a href="#" class="btn btn-sm btn-primary">Read More</a>
-          </div>
-          <div class="card-footer text-muted">
-            {{ post.created_at }}
+            <p class="card-text">{{ post.content[:120] }}...</p>
+            <a href="{{ url_for('view_post', post_id=post.id) }}" class="btn btn-outline-primary btn-sm">Read More</a>
           </div>
         </div>
       </div>
@@ -25,4 +26,5 @@
     <p>No posts found in this category.</p>
   {% endif %}
 </div>
+
 {% endblock %}

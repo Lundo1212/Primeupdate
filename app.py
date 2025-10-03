@@ -325,23 +325,30 @@ def admin_comments(post_id):
 def category_page(category_name):
     db = get_db()
     cur = db.cursor()
+
+    # Posts for this category
     cur.execute("SELECT * FROM posts WHERE category=? ORDER BY id DESC", (category_name,))
     posts = cur.fetchall()
 
-    # pass breaking and trending too so base.html and header still work
+    # Breaking news (top 3)
     cur.execute("SELECT * FROM posts ORDER BY id DESC LIMIT 3")
     breaking_news = cur.fetchall()
+
+    # Trending (all posts)
     cur.execute("SELECT * FROM posts ORDER BY id DESC")
     trending = cur.fetchall()
+
     year = datetime.utcnow().year
+
     return render_template(
         "category.html",
         posts=posts,
         category_name=category_name,
         breaking_news=breaking_news,
-        trending=trending,
+        trending_posts=trending,  # make sure this matches your template variable
         year=year
     )
+
 
 # ----------------- RUN ----------------- #
 if __name__ == '__main__':
