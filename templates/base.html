@@ -1,96 +1,97 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Prime Updates KE</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Prime Update</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
   <style>
-    body { background: #f8f9fa; font-family: 'Segoe UI', sans-serif; }
-    header { background: linear-gradient(90deg, #1a1a1a, #004080); color: #fff; padding: 1rem; }
-    .logo-text { font-size: 1.5rem; font-weight: bold; }
-    .category-bar { overflow-x: auto; white-space: nowrap; background: #004080; padding: 10px; }
-    .category-bar a { color: #fff; margin: 0 15px; font-weight: bold; text-decoration: none; }
-    .breaking-container { background: #000; color: rgb(10, 212, 44); padding: 5px 0; overflow: hidden; position: relative; }
-    .breaking-title { display: inline-block; white-space: nowrap; animation: scroll-left 12s linear infinite; font-weight: bold; font-size: 1.2rem; }
-    .breaking-title span { margin-right: 50px; }
-    @keyframes scroll-left { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
-    footer { background: #212529; color: white; padding: 2rem 1rem; margin-top: 40px; text-align: center; }
-    footer p.designer { font-style: italic; color: rgba(255,255,255,0.3); font-size: 0.9rem; }
+    body { background-color: #f8f9fa; }
+    footer { background-color: #212529; color: #ddd; padding: 2rem 0; }
+    footer a { color: #bbb; text-decoration: none; }
+    footer a:hover { color: #fff; }
   </style>
 </head>
 <body>
 
-<header class="d-flex justify-content-between align-items-center">
-  <div class="d-flex align-items-center">
-    <img src="{{ url_for('static', filename='logo.JPG') }}" alt="Logo" class="rounded-circle" style="width:40px;height:40px;margin-right:10px;">
-    <span class="logo-text">Prime Updates KE</span>
+<!-- NAVBAR -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+  <div class="container">
+    <a class="navbar-brand fw-bold" href="{{ url_for('index') }}">PrimeUpdate</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav me-auto">
+        <li class="nav-item">
+          <a class="nav-link" href="{{ url_for('index') }}">Home</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{{ url_for('category_page', category_name='Politics') }}">Politics</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{{ url_for('category_page', category_name='Health') }}">Health</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{{ url_for('category_page', category_name='Sports') }}">Sports</a>
+        </li>
+      </ul>
+
+      <!-- Admin Button -->
+      <ul class="navbar-nav">
+        {% if session.admin_logged_in %}
+          <li class="nav-item">
+            <a href="{{ url_for('admin_dashboard') }}" class="btn btn-sm btn-light me-2">Dashboard</a>
+          </li>
+          <li class="nav-item">
+            <a href="{{ url_for('admin_logout') }}" class="btn btn-sm btn-danger">Logout</a>
+          </li>
+        {% else %}
+          <li class="nav-item">
+            <a href="{{ url_for('admin_login') }}" class="btn btn-sm btn-outline-light">Admin</a>
+          </li>
+        {% endif %}
+      </ul>
+    </div>
   </div>
+</nav>
 
-  <div>
-    {% if session.get('admin_logged_in') %}
-      <a href="{{ url_for('admin_dashboard') if False else url_for('admin_dashboard') }}" class="btn btn-sm btn-light">Dashboard</a>
-      <a href="{{ url_for('admin_logout') }}" class="btn btn-sm btn-danger">Logout</a>
-    {% else %}
-      <a href="{{ url_for('admin_login') }}" class="btn btn-sm btn-light">Admin</a>
-    {% endif %}
-  </div>
-</header>
-
-<div class="category-bar">
-  <a href="{{ url_for('index') }}">Home</a>
-  <a href="{{ url_for('category_page', category_name='Politics') }}">Politics</a>
-  <a href="{{ url_for('category_page', category_name='Business') }}">Business</a>
-  <a href="{{ url_for('category_page', category_name='Sports') }}">Sports</a>
-  <a href="{{ url_for('category_page', category_name='Entertainment') }}">Entertainment</a>
-  <a href="{{ url_for('category_page', category_name='Technology') }}">Technology</a>
-  <a href="{{ url_for('category_page', category_name='Health') }}">Health</a>
-  <a href="{{ url_for('category_page', category_name='World') }}">World</a>
-  <a href="{{ url_for('category_page', category_name='Lifestyle') }}">Lifestyle</a>
-  <a href="{{ url_for('category_page', category_name='Opinion') }}">Opinion</a>
-</div>
-
-<!-- Breaking news title -->
-<div class="breaking-container">
-  <strong style="margin-left:10px;">Breaking News:</strong>
-  <div class="breaking-title">
-    {% for news in breaking_news %}
-      <span>{{ news.title }}</span>
-    {% endfor %}
-  </div>
-</div>
-
-<!-- Scrolling latest headlines (marquee) -->
-<marquee class="headline-marquee" direction="left" scrollamount="5" onmouseover="this.stop();" onmouseout="this.start();">
-  {% for headline in breaking_news %}
-    {{ headline.title }} &nbsp;&nbsp;|&nbsp;&nbsp;
-  {% endfor %}
-</marquee>
-
-<div class="container mt-3">
+<!-- MAIN CONTENT -->
+<main class="container my-4">
   {% block content %}{% endblock %}
-</div>
+</main>
 
+<!-- FOOTER -->
 <footer>
-  <p class="mb-2">Stay Informed. Stay Empowered. Stay Ahead with <strong>PrimeUpdates KE</strong>.</p>
-  <div class="mb-2">
-    <a href="{{ url_for('index') }}">Home</a> |
-    <a href="{{ url_for('category_page', category_name='Politics') }}">Politics</a> |
-    <a href="{{ url_for('category_page', category_name='Entertainment') }}">Entertainment</a> |
-    <a href="{{ url_for('category_page', category_name='Business') }}">Business</a> |
-    <a href="{{ url_for('category_page', category_name='Sports') }}">Sports</a>
+  <div class="container">
+    <div class="row">
+      <div class="col-md-4 mb-3">
+        <h5>About PrimeUpdate</h5>
+        <p>Your trusted source for the latest breaking news and in-depth stories.</p>
+      </div>
+      <div class="col-md-4 mb-3">
+        <h5>Categories</h5>
+        <ul class="list-unstyled">
+          <li><a href="{{ url_for('category_page', category_name='Politics') }}">Politics</a></li>
+          <li><a href="{{ url_for('category_page', category_name='Health') }}">Health</a></li>
+          <li><a href="{{ url_for('category_page', category_name='Sports') }}">Sports</a></li>
+          <li><a href="{{ url_for('index') }}">Trending</a></li>
+        </ul>
+      </div>
+      <div class="col-md-4 mb-3">
+        <h5>Follow Us</h5>
+        <a href="#" class="me-2">Facebook</a>
+        <a href="#" class="me-2">Twitter</a>
+        <a href="#" class="me-2">Instagram</a>
+      </div>
+    </div>
+    <div class="text-center mt-3">
+      <p class="mb-0">© 2025 PrimeUpdate | Built by <strong>David Kivinda</strong></p>
+    </div>
   </div>
-  <div class="mb-2">
-    <a href="#"><i class="fab fa-facebook"></i></a>
-    <a href="#"><i class="fab fa-twitter"></i></a>
-    <a href="#"><i class="fab fa-youtube"></i></a>
-    <a href="#"><i class="fab fa-instagram"></i></a>
-  </div>
-  <p class="designer mt-3">designed by david kivinda</p>
-  <p>&copy; {{ year if year else '' }} Prime Updates KE. All rights reserved.</p>
 </footer>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
