@@ -1,146 +1,67 @@
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Prime Updates KE</title>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-  <style>
-    body {
-      background: #f8f9fa;
-      font-family: 'Segoe UI', sans-serif;
-    }
-    header {
-      background: linear-gradient(90deg, #1a1a1a, #004080);
-      color: #fff;
-      padding: 1rem;
-    }
-    .logo-text {
-      font-size: 1.5rem;
-      font-weight: bold;
-    }
-    .category-bar {
-      overflow-x: auto;
-      white-space: nowrap;
-      background: #004080;
-      padding: 10px;
-    }
-    .category-bar a {
-      color: #fff;
-      margin: 0 15px;
-      font-weight: bold;
-      text-decoration: none;
-    }
-    .breaking-container {
-      background: #000;
-      color: rgb(10, 212, 44);
-      padding: 5px 0;
-      overflow: hidden;
-      position: relative;
-    }
-    .breaking-title {
-      display: inline-block;
-      white-space: nowrap;
-      animation: scroll-left 12s linear infinite;
-      font-weight: bold;
-      font-size: 1.2rem;
-    }
-    .breaking-title span {
-      margin-right: 50px;
-    }
-    @keyframes scroll-left {
-      0% { transform: translateX(100%); }
-      100% { transform: translateX(-100%); }
-    }
-    footer {
-      background: #0bb73c;
-      color: white;
-      padding: 2rem 1rem;
-      margin-top: 40px;
-      text-align: center;
-    }
-    footer p.designer {
-      font-style: italic;
-      color: rgba(255,255,255,0.3);
-      font-size: 0.9rem;
-    }
-  </style>
+  <title>PrimeUpdate</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
-<body>
+<body class="bg-light">
 
-<header class="d-flex justify-content-between align-items-center">
-  <div class="d-flex align-items-center">
-    <img src="{{ url_for('static', filename='logo.JPG') }}" alt="Logo" class="rounded-circle" style="width: 40px; height: 40px; margin-right: 10px;">
-    <span class="logo-text">Prime Updates KE</span>
-  </div>
-  <div>
-    {% if session.get('admin_logged_in') %}
-      <a href="{{ url_for('admin_dashboard') }}" class="btn btn-sm btn-light">Dashboard</a>
-      <a href="{{ url_for('admin_logout') }}" class="btn btn-sm btn-danger">Logout</a>
-    {% else %}
-      <a href="{{ url_for('admin_login') }}" class="btn btn-sm btn-light">Admin</a>
-    {% endif %}
-  </div>
-</header>
-
-<div class="category-bar">
-  <a href="{{ url_for('index') }}">Home</a>
-  <a href="{{ url_for('category_page', category_name='Politics') }}">Politics</a>
-  <a href="{{ url_for('category_page', category_name='Business') }}">Business</a>
-  <a href="{{ url_for('category_page', category_name='Sports') }}">Sports</a>
-  <a href="{{ url_for('category_page', category_name='Entertainment') }}">Entertainment</a>
-  <a href="{{ url_for('category_page', category_name='Technology') }}">Technology</a>
-  <a href="{{ url_for('category_page', category_name='Health') }}">Health</a>
-  <a href="{{ url_for('category_page', category_name='World') }}">World</a>
-  <a href="{{ url_for('category_page', category_name='Lifestyle') }}">Lifestyle</a>
-  <a href="{{ url_for('category_page', category_name='Opinion') }}">Opinion</a>
-</div>
-
-<!-- BREAKING NEWS BAR -->
-<div class="breaking-container">
-  <strong style="margin-left:10px;">Breaking News:</strong>
-  <div class="breaking-title">
-    {% for news in breaking_news %}
-      <span>{{ news.title }}</span>
-    {% endfor %}
-  </div>
-</div>
-
-<!-- HEADLINES BAR -->
-<div class="headlines-bar text-white" style="background:#0056b3; padding:8px; overflow-x:auto; white-space:nowrap;">
-  <strong style="margin-left:10px;">Latest Headlines:</strong>
-  {% for news in latest_news %}
-    <a href="#" class="text-white mx-3" style="text-decoration:none;">{{ news.title }}</a>
-  {% endfor %}
-</div>
-
-<!-- SCROLLING NEWS CARDS (like before) -->
-<div class="news-scroll mt-3">
-  <div class="d-flex flex-nowrap overflow-auto" style="scroll-behavior:smooth;">
-    {% for post in scrolling_news %}
-    <div class="card me-3" style="min-width: 250px; flex: 0 0 auto;">
-      <div class="card-body">
-        <h6 class="card-title">{{ post.title }}</h6>
-        <p class="card-text">{{ post.content[:100] }}...</p>
-        <a href="#" class="btn btn-sm btn-primary">Read More</a>
-      </div>
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+  <div class="container-fluid">
+    <a class="navbar-brand fw-bold" href="{{ url_for('index') }}">PrimeUpdate</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav me-auto">
+        <li class="nav-item"><a class="nav-link" href="#">Politics</a></li>
+        <li class="nav-item"><a class="nav-link" href="#">Sports</a></li>
+        <li class="nav-item"><a class="nav-link" href="#">Business</a></li>
+        <li class="nav-item"><a class="nav-link" href="#">Technology</a></li>
+      </ul>
+      <ul class="navbar-nav">
+        {% if session.get("admin") %}
+          <li class="nav-item"><a class="nav-link" href="{{ url_for('admin') }}">Dashboard</a></li>
+          <li class="nav-item"><a class="nav-link" href="{{ url_for('admin_logout') }}">Logout</a></li>
+        {% else %}
+          <li class="nav-item"><a class="nav-link" href="{{ url_for('admin_login') }}">Admin</a></li>
+        {% endif %}
+      </ul>
     </div>
-    {% endfor %}
   </div>
+</nav>
+
+<!-- Breaking News Bar -->
+<div class="bg-danger text-white py-2 px-3 fw-bold">BREAKING NEWS</div>
+
+<!-- Breaking News Titles -->
+<div class="bg-dark text-white py-2">
+  <marquee behavior="scroll" direction="left">
+    {% for post in breaking_posts %}
+      {{ post.title }} &nbsp; | &nbsp;
+    {% endfor %}
+  </marquee>
+</div>
+
+<!-- Main Content -->
+<div class="container my-4">
+  {% block content %}{% endblock %}
+</div>
+
+<!-- Subscription Section -->
+<div class="bg-primary text-white text-center py-4">
+  <h4>Subscribe to our Newsletter</h4>
+  <form method="POST" action="{{ url_for('subscribe') }}" class="d-flex justify-content-center mt-2">
+    <input type="email" name="email" class="form-control w-50 me-2" placeholder="Enter your email" required>
+    <button type="submit" class="btn btn-dark">Subscribe</button>
+  </form>
 </div>
 
 
-<!-- ================= Subscribe Section ================= -->
-<section class="subscribe bg-dark text-white py-4">
-  <div class="container text-center">
-    <h4>Subscribe to PrimeUpdate</h4>
-    <p>Stay updated with the latest breaking and trending news</p>
-    <form action="{{ url_for('subscribe') }}" method="POST" class="form-inline d-flex justify-content-center">
-      <input type="email" name="email" class="form-control w-50 mr-2" placeholder="Enter your email" required>
-      <button type="submit" class="btn btn-warning">Subscribe</button>
-    </form>
-  </div>
-</section>
+
 
 
 <footer>
