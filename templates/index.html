@@ -89,21 +89,21 @@
 
 <!-- Subscription Section -->
 <div class="bg-primary text-white py-5">
-  <div class="container text-center">
-    <h4 class="fw-bold mb-3">Subscribe to Prime Updates</h4>
-    <p class="mb-4">Get the latest news straight to your inbox. Stay informed with breaking news, trending stories, and more!</p>
-    
-    <form method="post" action="{{ url_for('subscribe') }}" class="row justify-content-center">
-      <div class="col-md-6">
-        <div class="input-group">
-          <input type="email" name="email" class="form-control form-control-lg" placeholder="Enter your email" required>
-          <button class="btn btn-warning btn-lg fw-bold" type="submit">Subscribe</button>
-        </div>
-      </div>
-    </form>
+    <div class="container text-center">
+        <h4 class="fw-bold mb-3">Subscribe to Prime Updates</h4>
+        <p class="mb-4">Get the latest news straight to your inbox.</p>
+        <form method="post" action="{{ url_for('subscribe') }}" class="row justify-content-center">
+            <div class="col-md-6">
+                <div class="input-group">
+                    <input type="email" name="email" class="form-control" placeholder="Enter your email" required>
+                    <button class="btn btn-light text-primary fw-bold" type="submit">Subscribe</button>
+                </div>
+            </div>
+        </form>
+
 
     <small class="d-block mt-3 text-light-opacity-75">
-      We respect your privacy. No spam, ever.
+      We respect your privacy.
     </small>
   </div>
 </div>

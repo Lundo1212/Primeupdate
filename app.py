@@ -122,30 +122,34 @@ def index():
 def view_post(post_id):
     db = get_db()
     cur = db.cursor()
+
+    # Fetch the post
     cur.execute("SELECT * FROM posts WHERE id=?", (post_id,))
     post = cur.fetchone()
     if not post:
         return "Post not found", 404
 
+    # Handle comment submission
     if request.method == 'POST':
         name = request.form.get('name', 'Anonymous').strip()
-        comment = request.form.get('comment', '').strip()
-        if comment:
+        email = request.form.get('email', '').strip()
+        comment_text = request.form.get('comment', '').strip()
+        if comment_text:
             cur.execute(
-                "INSERT INTO comments (post_id, name, comment) VALUES (?, ?, ?)",
-                (post_id, name, comment)
+                "INSERT INTO comments (post_id, name, email, comment) VALUES (?, ?, ?, ?)",
+                (post_id, name, email, comment_text)
             )
             db.commit()
             return redirect(url_for('view_post', post_id=post_id))
 
-    # fetch comments for this post
+    # Fetch all comments for this post
     cur.execute("SELECT * FROM comments WHERE post_id=? ORDER BY id DESC", (post_id,))
     comments = cur.fetchall()
 
-    # also pass breaking & trending for header
+    # Fetch breaking and trending news for header/footer
     cur.execute("SELECT * FROM posts ORDER BY id DESC LIMIT 3")
     breaking_news = cur.fetchall()
-    cur.execute("SELECT * FROM posts WHERE 1 ORDER BY id DESC")
+    cur.execute("SELECT * FROM posts ORDER BY id DESC")
     trending_posts = cur.fetchall()
 
     year = datetime.utcnow().year
@@ -155,9 +159,12 @@ def view_post(post_id):
         post=post,
         comments=comments,
         breaking_news=breaking_news,
-        trending=trending_posts,
+        trending_posts=trending_posts,
         year=year
     )
+
+
+  
 
 # SUBSCRIBE
 @app.route('/subscribe', methods=['POST'])
@@ -348,6 +355,40 @@ def category_page(category_name):
         trending_posts=trending,  # make sure this matches your template variable
         year=year
     )
+
+from flask import request, redirect, url_for, flash
+
+# Add a comment to a post
+@app.route('/add_comment/<int:post_id>', methods=['POST'])
+def add_comment(post_id):
+    db = get_db()
+    cur = db.cursor()
+    name = request.form['name']
+    email = request.form['email']
+    comment = request.form['comment']
+
+    cur.execute("INSERT INTO comments (post_id, name, email, comment) VALUES (?, ?, ?, ?)",
+                (post_id, name, email, comment))
+    db.commit()
+    flash("Comment added successfully!", "success")
+    return redirect(url_for('view_post', post_id=post_id))
+
+
+# Subscribe an email
+@app.route('/subscribe', methods=['POST'])
+def subscribe():
+    db = get_db()
+    cur = db.cursor()
+    email = request.form['email']
+
+    try:
+        cur.execute("INSERT INTO subscribers (email) VALUES (?)", (email,))
+        db.commit()
+        flash("Subscribed successfully!", "success")
+    except:
+        flash("Email already subscribed.", "warning")
+    
+    return redirect(url_for('index'))  # Redirect to homepage
 
 
 # ----------------- RUN ----------------- #

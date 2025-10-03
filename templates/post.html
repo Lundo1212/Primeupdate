@@ -17,34 +17,37 @@
   {% endif %}
 </div>
 
-<!-- Comments Section -->
-<div class="card mb-3">
-  <div class="card-body">
-    <h5>Comments</h5>
-    
-    <!-- Existing comments -->
+<!-- Comment Form -->
+<div class="mt-4 p-3 border rounded bg-light">
+    <h5>Leave a Comment</h5>
+    <form method="POST" action="{{ url_for('view_post', post_id=post.id) }}">
+        <div class="mb-2">
+            <input type="text" name="name" class="form-control" placeholder="Your Name" required>
+        </div>
+        <div class="mb-2">
+            <input type="email" name="email" class="form-control" placeholder="Your Email (optional)">
+        </div>
+        <div class="mb-2">
+            <textarea name="comment" class="form-control" rows="3" placeholder="Write a comment..." required></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary">Post Comment</button>
+    </form>
+</div>
+
+<!-- Display Comments -->
+<div class="mt-4">
+    <h5>Comments:</h5>
     {% for comment in comments %}
-    <div class="mb-2 border-bottom pb-2">
-      <p><strong>{{ comment.name }}</strong> says:</p>
-      <p>{{ comment.text }}</p>
-      <p class="text-muted" style="font-size:0.8rem">{{ comment.timestamp }}</p>
+    <div class="border p-2 mb-2 rounded bg-white shadow-sm">
+        <strong>{{ comment.name }}</strong>
+        {% if comment.email %}<span class="text-muted">&lt;{{ comment.email }}&gt;</span>{% endif %}
+        <span class="text-muted float-end">{{ comment.created_at }}</span>
+        <p class="mt-1">{{ comment.comment }}</p>
     </div>
     {% else %}
     <p>No comments yet. Be the first to comment!</p>
     {% endfor %}
-
-    <!-- Add new comment -->
-    <form method="POST" action="{{ url_for('view_post', post_id=post.id) }}">
-
-      <div class="mb-2">
-        <input type="text" name="name" class="form-control" placeholder="Your Name" required>
-      </div>
-      <div class="mb-2">
-        <textarea name="text" class="form-control" placeholder="Your Comment" required></textarea>
-      </div>
-      <button class="btn btn-primary">Submit Comment</button>
-    </form>
-  </div>
 </div>
 {% endblock %}
+
 
