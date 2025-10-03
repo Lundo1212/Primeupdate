@@ -96,7 +96,7 @@
   <a href="{{ url_for('category_page', category_name='Opinion') }}">Opinion</a>
 </div>
 
-<!-- BREAKING NEWS TITLE -->
+<!-- BREAKING NEWS BAR -->
 <div class="breaking-container">
   <strong style="margin-left:10px;">Breaking News:</strong>
   <div class="breaking-title">
@@ -106,9 +106,29 @@
   </div>
 </div>
 
-<div class="container mt-3">
-  {% block content %}{% endblock %}
+<!-- HEADLINES BAR -->
+<div class="headlines-bar text-white" style="background:#0056b3; padding:8px; overflow-x:auto; white-space:nowrap;">
+  <strong style="margin-left:10px;">Latest Headlines:</strong>
+  {% for news in latest_news %}
+    <a href="#" class="text-white mx-3" style="text-decoration:none;">{{ news.title }}</a>
+  {% endfor %}
 </div>
+
+<!-- SCROLLING NEWS CARDS (like before) -->
+<div class="news-scroll mt-3">
+  <div class="d-flex flex-nowrap overflow-auto" style="scroll-behavior:smooth;">
+    {% for post in scrolling_news %}
+    <div class="card me-3" style="min-width: 250px; flex: 0 0 auto;">
+      <div class="card-body">
+        <h6 class="card-title">{{ post.title }}</h6>
+        <p class="card-text">{{ post.content[:100] }}...</p>
+        <a href="#" class="btn btn-sm btn-primary">Read More</a>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+
 
 <!-- ================= Subscribe Section ================= -->
 <section class="subscribe bg-dark text-white py-4">

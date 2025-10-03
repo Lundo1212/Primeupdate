@@ -57,14 +57,13 @@ def init_db():
 
 init_db()
 
-# -------------------- ROUTES --------------------
-
+# -------------------- INDEX --------------------
 @app.route('/')
 def index():
     db = get_db()
     cursor = db.cursor()
 
-    # All posts
+    # All posts (for trending)
     cursor.execute("SELECT * FROM posts ORDER BY id DESC")
     posts = cursor.fetchall()
 
@@ -72,23 +71,23 @@ def index():
     cursor.execute("SELECT * FROM posts ORDER BY id DESC LIMIT 3")
     breaking_news = cursor.fetchall()
 
-    # Latest 10 posts
-    cursor.execute("SELECT * FROM posts ORDER BY id DESC LIMIT 10")
-    latest_posts = cursor.fetchall()
+    # Latest Titles (10 latest posts, excluding breaking)
+    cursor.execute("SELECT * FROM posts ORDER BY id DESC LIMIT 10 OFFSET 3")
+    latest_titles = cursor.fetchall()
 
-    # All posts = Trending
+    # Trending = all posts
     trending_posts = posts
 
     return render_template(
         "index.html",
         posts=posts,
         breaking_news=breaking_news,
-        latest_posts=latest_posts,
+        latest_titles=latest_titles,
         trending_posts=trending_posts,
         year=2025
     )
 
-# -------------------- SINGLE POST --------------------
+# -------------------- VIEW POST --------------------
 @app.route('/post/<int:post_id>', methods=['GET', 'POST'])
 def view_post(post_id):
     db = get_db()
@@ -119,7 +118,12 @@ def subscribe():
     if email:
         db = get_db()
         cursor = db.cursor()
-        cursor.execute("CREATE TABLE IF NOT EXISTS subscribers (id INTEGER PRIMARY KEY AUTOINCREMENT, email TEXT UNIQUE)")
+        cursor.execute("""
+            CREATE TABLE IF NOT EXISTS subscribers (
+                id INTEGER PRIMARY KEY AUTOINCREMENT, 
+                email TEXT UNIQUE
+            )
+        """)
         try:
             cursor.execute("INSERT INTO subscribers (email) VALUES (?)", (email,))
             db.commit()
