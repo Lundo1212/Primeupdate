@@ -1,23 +1,22 @@
 {% extends 'base.html' %}
 {% block content %}
 
-<!-- 1) Breaking news titles (three) - already above as marquee, but also list them nicely here -->
-<div class="container mb-3">
-  <div class="row">
-    {% for post in breaking_news %}
-    <div class="col-md-4">
-      <div class="card mb-2">
-        {% if post.image %}
-        <img src="{{ url_for('uploaded_file', filename=post.image) }}" class="card-img-top" alt="{{ post.title }}" style="height:180px;object-fit:cover;">
-        {% endif %}
-        <div class="card-body">
-          <h6 class="card-title"><a href="{{ url_for('view_post', post_id=post.id) }}" class="text-dark">{{ post.title }}</a></h6>
-        </div>
-      </div>
-    </div>
-    {% endfor %}
-  </div>
+<!-- Breaking News Header Bar -->
+<div class="bg-danger text-white fw-bold px-3 py-2 mb-0">
+  BREAKING NEWS
 </div>
+
+<!-- Breaking News Titles Marquee -->
+<div class="bg-light border-bottom py-2 mb-3">
+  <marquee behavior="scroll" direction="left" scrollamount="5">
+    {% for post in breaking_news %}
+      <a href="{{ url_for('view_post', post_id=post.id) }}" class="me-4 text-dark fw-semibold">
+        {{ post.title }}
+      </a>
+    {% endfor %}
+  </marquee>
+</div>
+
 
 <!-- 2) Hero slideshow (top 3) -->
 <div id="heroCarousel" class="carousel slide mb-4" data-bs-ride="carousel">
